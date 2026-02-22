@@ -1,0 +1,159 @@
+---
+// src/components/section/WhatWeDo.astro
+import { Image } from 'astro:assets';
+import { urlFor } from '@/lib/sanity';
+
+// --- TypeScript Interfaces ---
+interface BaseBlock {
+  _type: 'serviceBlock' | 'brandBlock' | 'imageBlock';
+  _key: string;
+}
+
+interface ServiceBlock extends BaseBlock {
+  _type: 'serviceBlock';
+  iconSvgPath?: string;
+  title?: { id?: string; en?: string };
+  description?: { id?: string; en?: string };
+}
+
+interface BrandBlock extends BaseBlock {
+  _type: 'brandBlock';
+  image?: any; // Menggunakan properti image tunggal sesuai schema baru
+}
+
+interface ImageBlock extends BaseBlock {
+  _type: 'imageBlock';
+  photo?: any;
+}
+
+type GridItem = ServiceBlock | BrandBlock | ImageBlock;
+
+export interface Props {
+  lang: 'id' | 'en';
+  headline?: { id?: string; en?: string };
+  description?: { id?: string; en?: string };
+  gridItems?: GridItem[];
+}
+
+const { lang, headline, description, gridItems = [] } = Astro.props;
+
+// Fallback Text
+const displayHeadline =
+  headline?.[lang] || (lang === 'id' ? 'Apa yang Kami Lakukan' : 'What We Do');
+const displayDesc = description?.[lang] || '';
+---
+
+<section
+  id='what-we-do'
+  class='py-20 md:py-32 bg-slate-50 overflow-hidden'>
+  <div class='container mx-auto px-4 max-w-7xl'>
+    {/* Header Section */}
+    <div class='max-w-3xl mb-16 md:mb-24'>
+      <h2
+        class='text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight mb-6'>
+        {displayHeadline}
+      </h2>
+      <p
+        class='text-lg md:text-xl text-slate-600 leading-relaxed text-balance whitespace-pre-line'>
+        {displayDesc}
+      </p>
+    </div>
+
+    {/* Grid Layout: 4 Kolom di Desktop untuk meniru referensi */}
+    <div
+      class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-[300px] md:auto-rows-[340px]'>
+      {
+        gridItems.slice(0, 8).map((item) => {
+          // TIPE 1: SERVICE CARD (Icon + Teks)
+          if (item._type === 'serviceBlock') {
+            const title = item.title?.[lang] || 'Service Title';
+            const desc = item.description?.[lang] || '';
+            const svgPath = item.iconSvgPath || 'M3 3h18v18H3z';
+
+            return (
+              <div class='bg-white rounded-[2rem] p-8 flex flex-col hover:shadow-xl transition-shadow duration-300 border border-slate-100/80'>
+                <div class='w-14 h-14 mb-6 rounded-xl bg-slate-100 flex items-center justify-center text-slate-900'>
+                  <svg
+                    xmlns='http://www.w3.org/2000/svg'
+                    viewBox='0 0 24 24'
+                    fill='none'
+                    stroke-width='1.5'
+                    stroke='currentColor'
+                    class='w-8 h-8'>
+                    <path d={svgPath} />
+                  </svg>
+                </div>
+                <h3 class='text-xl font-bold text-slate-900 mb-3'>{title}</h3>
+                <p class='text-slate-600 leading-relaxed text-sm flex-grow'>
+                  {desc}
+                </p>
+              </div>
+            );
+          }
+
+          // TIPE 2: BRAND CARD (Sekarang menjadi Full Image Cover)
+          if (item._type === 'brandBlock') {
+            const imageUrl = item.image
+              ? urlFor(item.image).width(600).height(600).url()
+              : null;
+
+            return (
+              <div class='rounded-[2rem] overflow-hidden hover:shadow-xl transition-shadow duration-300 relative h-full'>
+                {imageUrl ? (
+                  <Image
+                    src={imageUrl}
+                    alt='Brand Card Highlight'
+                    width={600}
+                    height={600}
+                    class='w-full h-full object-cover'
+                  />
+                ) : (
+                  <div class='w-full h-full bg-indigo-500/10 flex items-center justify-center text-indigo-500 font-medium'>
+                    No Brand Image
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // TIPE 3: IMAGE CARD (Foto Full)
+          if (item._type === 'imageBlock') {
+            const photoUrl = item.photo
+              ? urlFor(item.photo).width(600).height(600).url()
+              : null;
+
+            return (
+              <div class='rounded-[2rem] overflow-hidden hover:shadow-xl transition-shadow duration-300 relative h-full'>
+                {photoUrl ? (
+                  <Image
+                    src={photoUrl}
+                    alt='Service highlight photo'
+                    width={600}
+                    height={600}
+                    class='w-full h-full object-cover'
+                  />
+                ) : (
+                  <div class='w-full h-full bg-slate-200 flex items-center justify-center text-slate-400 font-medium'>
+                    No Photo
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          return null;
+        })
+      }
+
+      {
+        gridItems.length === 0 && (
+          <div class='col-span-full p-12 border-2 border-dashed border-slate-300 rounded-[2rem] text-center text-slate-500'>
+            {lang === 'id'
+              ? 'Belum ada item layanan yang ditambahkan di CMS.'
+              : 'No service items added in CMS yet.'}
+          </div>
+        )
+      }
+    </div>
+  </div>
+</section>

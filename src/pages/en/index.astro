@@ -1,0 +1,63 @@
+---
+// src/pages/en/index.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/section/Hero.astro';
+import About from '@/components/section/About.astro';
+import { sanityClient } from '@/lib/sanity';
+import HowItWorks from '@/components/section/HowItWorks.astro';
+import WhatWeDo from '@/components/section/WhatWeDo.astro';
+import whatWeDo from '../../../sanity/schemaTypes/whatWeDo';
+import Portfolio from '@/components/section/Portfolio.astro';
+import Pricing from '@/components/section/Pricing.astro';
+import Template from '@/components/section/Template.astro';
+import FAQ from '@/components/section/FAQ.astro';
+import Contact from '@/components/section/Contact.astro';
+let heroData = null;
+let aboutData = null;
+let howItWorksData = null;
+let whatWeDoData = null;
+
+try {
+  [heroData, aboutData, howItWorksData, whatWeDoData] = await Promise.all([
+    sanityClient.fetch(`*[_type == "hero"][0]`),
+    sanityClient.fetch(`*[_type == "about"][0]`),
+    sanityClient.fetch(`*[_type == "howItWorks"][0]`),
+    sanityClient.fetch(`*[_type == "whatWeDo"][0]`),
+  ]);
+} catch (error) {
+  console.error('Sanity Fetch Error:', error);
+}
+---
+
+<BaseLayout lang='en'>
+  <Hero
+    headline={heroData?.headline?.en}
+    ctaText={heroData?.ctaText?.en}
+    ctaLink={heroData?.ctaLink}
+  />
+
+  <About
+    lang='en'
+    headline={aboutData?.headline}
+    description={aboutData?.description}
+    statistics={aboutData?.statistics}
+  />
+  <HowItWorks
+    lang='en'
+    headline={howItWorksData?.headline}
+    description={howItWorksData?.description}
+    mainImage={howItWorksData?.mainImage}
+    steps={howItWorksData?.steps}
+  />
+  <WhatWeDo
+    lang='en'
+    headline={whatWeDoData?.headline}
+    description={whatWeDoData?.description}
+    gridItems={whatWeDoData?.gridItems}
+  />
+  <Portfolio lang='en' />
+  <Pricing lang='en' />
+  <Template lang='en' />
+  <FAQ lang='en' />
+  <Contact lang='en' />
+</BaseLayout>

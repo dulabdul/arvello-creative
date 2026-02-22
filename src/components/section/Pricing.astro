@@ -1,0 +1,123 @@
+---
+// src/components/section/Pricing.astro
+import { Button } from '@/components/ui/button';
+import { sanityClient } from '@/lib/sanity';
+import PricingCarousel, { type PricingPackage } from '../ui/pricingCarousel';
+
+export interface Props {
+  lang: 'id' | 'en';
+}
+const { lang } = Astro.props;
+
+// --- Data Fetching ---
+let sectionData: any = null;
+
+try {
+  sectionData = await sanityClient.fetch(`*[_type == "pricingSection"][0]`);
+} catch (error) {
+  console.error('Sanity Pricing Fetch Error:', error);
+}
+
+// --- Localize Static Text (KOLOM KIRI) ---
+const headline = sectionData?.headline?.[lang] || 'Pricing';
+const subheadline =
+  sectionData?.subheadline?.[lang] ||
+  "Take a look at some of our recent projects to see how we've helped businesses like yours succeed online.";
+const leftCardTitle =
+  sectionData?.leftCardTitle?.[lang] || "Let's Schedule a Meeting";
+const leftCardButtonText =
+  sectionData?.leftCardButtonText?.[lang] || 'Schedule Meeting';
+
+// Setup WA Link untuk Kolom Kiri
+const waNumber = sectionData?.whatsappNumber || '6281234567890';
+const defaultWaMsg =
+  sectionData?.defaultWhatsappMessage?.[lang] ||
+  'Halo, saya ingin menjadwalkan meeting.';
+const leftWaLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(defaultWaMsg)}`;
+
+// --- Process Packages untuk Carousel (KOLOM KANAN) ---
+const rawPackages = sectionData?.pricingPackages || [];
+
+const processedPackages: PricingPackage[] = rawPackages.map((pkg: any) => {
+  const price = lang === 'id' ? pkg.priceIdr || 'Rp 0' : pkg.priceUsd || '$0';
+  const pkgWaMsg =
+    pkg.packageWhatsappMessage?.[lang] ||
+    `Halo, saya tertarik dengan paket ${pkg.packageName?.[lang] || 'ini'}.`;
+  const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(pkgWaMsg)}`;
+
+  const features = (pkg.features || [])
+    .map((f: any) => f?.[lang] || '')
+    .filter(Boolean);
+
+  return {
+    _key: pkg._key,
+    name: pkg.packageName?.[lang] || 'Plan',
+    description: pkg.packageDescription?.[lang] || '',
+    price: price,
+    billingCycle: pkg.billingCycle?.[lang] || '',
+    features: features,
+    waLink: waLink,
+    isPopular: pkg.isPopular || false, // Mapping boolean ke component
+  };
+});
+---
+
+<section
+  id='pricing'
+  class='py-20 md:py-32 bg-slate-50/50 overflow-hidden relative'>
+  <div class='container mx-auto px-4 max-w-7xl relative z-10'>
+    <div class='grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-start'>
+      {/* --- KOLOM KIRI (Statis) - 4 Kolom --- */}
+      <div class='lg:col-span-4 flex flex-col space-y-10 lg:sticky lg:top-32'>
+        <div class='space-y-6'>
+          <h2
+            class='text-5xl md:text-6xl font-extrabold text-slate-800 tracking-tight inline-block border-2 border-dashed border-blue-400 p-2 -ml-2'>
+            {headline}
+          </h2>
+          <p
+            class='text-lg text-slate-500 leading-relaxed text-balance whitespace-pre-line'>
+            {subheadline}
+          </p>
+        </div>
+
+        {/* Card "Let's Schedule a Meeting" */}
+        <div
+          class='bg-white rounded-[2rem] p-8 md:p-10 shadow-lg border border-slate-100 flex flex-col space-y-8'>
+          <h3
+            class='text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight text-balance leading-snug'>
+            {leftCardTitle}
+          </h3>
+          <a
+            href={leftWaLink}
+            target='_blank'
+            rel='noopener noreferrer'>
+            <Button
+              size='lg'
+              className='w-full rounded-xl h-14 text-base font-bold bg-blue-600 hover:bg-blue-700 shadow-[0_8px_20px_rgb(37,99,235,0.2)] transition-all'>
+              {leftCardButtonText}
+            </Button>
+          </a>
+        </div>
+      </div>
+
+      {/* --- KOLOM KANAN (React Carousel) - 8 Kolom --- */}
+      <div class='lg:col-span-8 overflow-hidden pt-4 lg:pt-0'>
+        {
+          processedPackages.length > 0 ? (
+            <PricingCarousel
+              client:visible
+              packages={processedPackages}
+              lang={lang}
+            />
+          ) : (
+            <div class='p-12 border-2 border-dashed border-slate-300 rounded-[2rem] text-center text-slate-500 bg-white'>
+              {lang === 'id'
+                ? 'Belum ada paket harga yang diisi di CMS.'
+                : 'No pricing packages available.'}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>

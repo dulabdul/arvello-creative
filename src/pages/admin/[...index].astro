@@ -1,0 +1,38 @@
+---
+// src/pages/admin/[...index].astro
+import SanityStudio from '@/components/SanityStudio';
+
+// Beritahu Astro bahwa rute ini adalah SSR (Server-Side), BUKAN Static
+export const prerender = false;
+---
+
+<!doctype html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <meta
+      name='viewport'
+      content='width=device-width, initial-scale=1'
+    />
+    <title>Sanity Studio | Admin</title>
+  </head>
+  <body>
+    <SanityStudio client:only='react' />
+  </body>
+</html>
+
+<style is:global>
+  :root,
+  html,
+  body {
+    height: 100vh !important;
+    width: 100vw !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+
+  [data-ui='Root'] {
+    height: 100vh !important;
+  }
+</style>

@@ -1,0 +1,68 @@
+---
+// src/pages/index.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import Hero from '@/components/section/Hero.astro';
+import About from '@/components/section/About.astro';
+// Import komponen baru
+import HowItWorks from '@/components/section/HowItWorks.astro';
+import { sanityClient } from '@/lib/sanity';
+import WhatWeDo from '@/components/section/WhatWeDo.astro';
+import Portfolio from '@/components/section/Portfolio.astro';
+import Pricing from '@/components/section/Pricing.astro';
+import Template from '@/components/section/Template.astro';
+import FAQ from '@/components/section/FAQ.astro';
+import Contact from '@/components/section/Contact.astro';
+
+let heroData = null;
+let aboutData = null;
+// Variabel baru untuk data HowItWorks
+let howItWorksData = null;
+let whatWeDoData = null;
+
+try {
+  // Tambahkan query baru ke Promise.all agar tetap efisien
+  [heroData, aboutData, howItWorksData, whatWeDoData] = await Promise.all([
+    sanityClient.fetch(`*[_type == "hero"][0]`),
+    sanityClient.fetch(`*[_type == "about"][0]`),
+    // Fetch dokumen singleton howItWorks
+    sanityClient.fetch(`*[_type == "howItWorks"][0]`),
+    sanityClient.fetch(`*[_type == "whatWeDo"][0]`),
+  ]);
+} catch (error) {
+  console.error('Sanity Fetch Error:', error);
+}
+---
+
+<BaseLayout lang='id'>
+  <Hero
+    headline={heroData?.headline?.id}
+    ctaText={heroData?.ctaText?.id}
+    ctaLink={heroData?.ctaLink}
+  />
+
+  <About
+    lang='id'
+    headline={aboutData?.headline}
+    description={aboutData?.description}
+    statistics={aboutData?.statistics}
+  />
+
+  <HowItWorks
+    lang='id'
+    headline={howItWorksData?.headline}
+    description={howItWorksData?.description}
+    mainImage={howItWorksData?.mainImage}
+    steps={howItWorksData?.steps}
+  />
+  <WhatWeDo
+    lang='id'
+    headline={whatWeDoData?.headline}
+    description={whatWeDoData?.description}
+    gridItems={whatWeDoData?.gridItems}
+  />
+  <Portfolio lang='id' />
+  <Pricing lang='id' />
+  <Template lang='id' />
+  <FAQ lang='id' />
+  <Contact lang='id' />
+</BaseLayout>

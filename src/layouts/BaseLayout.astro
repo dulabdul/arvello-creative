@@ -1,0 +1,127 @@
+---
+// src/layouts/BaseLayout.astro
+import '../styles/global.css';
+import { sanityClient, urlFor } from '../lib/sanity';
+import Navbar from '@/components/layout/Navbar';
+import Footer from '@/components/section/Footer.astro';
+
+export interface Props {
+  title?: string;
+  description?: string;
+  image?: any;
+  brandName?: string;
+  lang?: 'id' | 'en'; 
+}
+
+const { title, description, image, brandName: propBrandName, lang = 'id' } = Astro.props;
+
+const query = `*[_type == "siteSettings"][0]`;
+const siteSettings = (await sanityClient.fetch(query)) || {};
+
+const finalBrandName = propBrandName || siteSettings.brandName || 'Agency Profile';
+const baseSeoTitle = siteSettings.title || finalBrandName;
+
+// EKSTRAKSI BAHASA SECARA DINAMIS 
+// Gunakan optional chaining untuk mencegah error jika kolom di CMS kosong
+const fallbackSuffix = siteSettings.seoTitleSuffix?.[lang] || '';
+const seoSuffix = fallbackSuffix ? ` ${fallbackSuffix}` : '';
+const finalTitle = title ? `${title} - ${baseSeoTitle}` : `${baseSeoTitle}${seoSuffix}`;
+
+const defaultDesc = siteSettings.description?.[lang] || 'Professional Agency services.';
+const finalDesc = description || defaultDesc;
+
+const finalKeywords = siteSettings.keywords?.[lang] || '';
+
+// RESOLUSI URL & GAMBAR
+const siteUrl = siteSettings.siteUrl || Astro.site || Astro.url.origin;
+const canonicalURL = new URL(Astro.url.pathname, siteUrl).toString();
+
+const imageSource = image || siteSettings.ogImage;
+const finalOgImage = imageSource ? urlFor(imageSource).width(1200).height(630).format('webp').url() : '';
+
+const isIndexable = siteSettings.allowIndexing !== false;
+const robotsContent = isIndexable ? 'index, follow' : 'noindex, nofollow';
+
+// Generate Hreflang URLs
+const idUrl = new URL('/', siteUrl).toString();
+const enUrl = new URL('/en/', siteUrl).toString();
+---
+
+<!DOCTYPE html>
+<html lang={lang} class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>{finalTitle}</title>
+    <meta name="title" content={finalTitle} />
+    <meta name="description" content={finalDesc} />
+    {finalKeywords && <meta name="keywords" content={finalKeywords} />}
+    
+    <link rel="canonical" href={canonicalURL} />
+    <meta name="robots" content={robotsContent} />
+
+    <link rel="alternate" hreflang="id" href={idUrl} />
+    <link rel="alternate" hreflang="en" href={enUrl} />
+    <link rel="alternate" hreflang="x-default" href={enUrl} />
+
+    {lang === 'id' && (
+      <script is:inline>
+        (function() {
+          if (!localStorage.getItem('lang_redirected')) {
+            const userLang = navigator.language || navigator.userLanguage;
+            if (!userLang.toLowerCase().includes('id')) {
+              localStorage.setItem('lang_redirected', 'true');
+              window.location.replace('/en/');
+            }
+          }
+        })();
+      </script>
+    )}
+
+    {siteSettings.googleSiteVerification && (
+      <meta name="google-site-verification" content={siteSettings.googleSiteVerification} />
+    )}
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:title" content={finalTitle} />
+    <meta property="og:description" content={finalDesc} />
+    <meta property="og:site_name" content={baseSeoTitle} />
+    {finalOgImage && <meta property="og:image" content={finalOgImage} />}
+
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalURL} />
+    <meta property="twitter:title" content={finalTitle} />
+    <meta property="twitter:description" content={finalDesc} />
+    {finalOgImage && <meta property="twitter:image" content={finalOgImage} />}
+    {siteSettings.twitterHandle && <meta property="twitter:site" content={siteSettings.twitterHandle} />}
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": baseSeoTitle,
+      "url": siteUrl,
+      "description": finalDesc
+    })} />
+
+    {siteSettings.gaId && (
+      <>
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${siteSettings.gaId}`}></script>
+        <script define:vars={{ gaId: siteSettings.gaId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', gaId);
+        </script>
+      </>
+    )}
+  </head>
+  <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
+    <Navbar client:load brandName={finalBrandName} currentLang={lang} />
+    <main class="w-full flex-col">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

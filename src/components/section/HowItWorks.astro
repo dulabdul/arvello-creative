@@ -1,0 +1,149 @@
+---
+// src/components/section/HowItWorks.astro
+import { Image } from 'astro:assets';
+import { urlFor } from '@/lib/sanity';
+
+// --- TypeScript Interfaces untuk Type Safety ---
+interface LocaleString {
+  id?: string;
+  en?: string;
+}
+interface LocaleText {
+  id?: string;
+  en?: string;
+}
+
+interface StepItem {
+  title: LocaleString;
+  description: LocaleText;
+  // Key unik dari Sanity untuk optimasi rendering list
+  _key?: string;
+}
+
+// Props yang diterima komponen ini
+export interface Props {
+  lang: 'id' | 'en';
+  headline?: LocaleString;
+  description?: LocaleText;
+  mainImage?: any; // Objek gambar dari Sanity
+  steps?: StepItem[];
+}
+
+const { lang, headline, description, mainImage, steps = [] } = Astro.props;
+
+// --- Logika Ekstraksi Data (DRY & Fail-safe) ---
+const displayHeadline =
+  headline?.[lang] || (lang === 'id' ? 'Cara Kerja Kami' : 'How It Works');
+// Menggunakan fallback text jika data kosong
+const displayDesc =
+  description?.[lang] ||
+  (lang === 'id'
+    ? 'Kami percaya kolaborasi erat adalah kunci kesuksesan kampanye.'
+    : 'We believe close collaboration is key to successful campaigns.');
+
+// Proses Gambar Sanity
+const imageUrl = mainImage
+  ? urlFor(mainImage).width(800).height(1000).url()
+  : null;
+const imageAlt = mainImage?.alt || 'Process visualization image';
+---
+
+<section
+  id='how-it-works'
+  class='py-20 md:py-32 bg-slate-50 overflow-hidden'>
+  <div class='container mx-auto px-4 max-w-7xl'>
+    <div class='grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start'>
+      {/* ---- KOLOM KIRI: Headline, Teks, Gambar ---- */}
+      {/* order-1 memastikan ini di atas pada mobile */}
+      <div class='flex flex-col space-y-8 order-1 lg:sticky lg:top-32'>
+        <div class='space-y-6'>
+          <h2
+            class='text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight'>
+            {displayHeadline}
+          </h2>
+          {
+            /* whitespace-pre-line agar line-break di textarea CMS terbaca di HTML */
+          }
+          <p
+            class='text-lg md:text-xl text-slate-600 leading-relaxed text-balance whitespace-pre-line'>
+            {displayDesc}
+          </p>
+        </div>
+
+        {
+          /* Gambar Kiri dengan styling modern (rounded corner besar & shadow) */
+        }
+        {
+          imageUrl ? (
+            <div class='relative rounded-[2.5rem] overflow-hidden shadow-2xl mt-8 border-4 border-white/60'>
+              {/* Menggunakan Astro Image untuk optimasi performa & lazy loading */}
+              <Image
+                src={imageUrl}
+                alt={imageAlt}
+                width={800}
+                height={1000}
+                class='w-full aspect-[16/9] object-cover bg-slate-200'
+              />
+            </div>
+          ) : (
+            // Placeholder jika gambar belum diupload
+            <div class='h-64 md:h-96 rounded-[2.5rem] bg-slate-200 animate-pulse border-4 border-white/60 flex items-center justify-center text-slate-400'>
+              No Image Uploaded
+            </div>
+          )
+        }
+      </div>
+
+      {/* ---- KOLOM KANAN: Daftar Langkah Berangka (Numbered Steps) ---- */}
+      {
+        /* order-2 di mobile, order-2 di desktop. mt-8 di lg agar sejajar visual dengan teks kiri */
+      }
+      <div class='flex flex-col space-y-10 order-2 lg:mt-4'>
+        {
+          steps.length > 0 ? (
+            steps.map((step, index) => {
+              // Ekstraksi data per langkah
+              const stepTitle = step.title?.[lang] || `Step ${index + 1}`;
+              const stepDesc = step.description?.[lang] || '';
+              const stepNumber = index + 1;
+
+              return (
+                // Group untuk hover effect
+                <div class='flex gap-5 md:gap-8 group relative'>
+                  {/* --- Bagian Nomor Modern --- */}
+                  <div class='flex-shrink-0 relative z-10'>
+                    {/* Kotak Gradient Nomor */}
+                    <div class='flex items-center justify-center w-14 h-14 md:w-16 md:h-16 rounded-2xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-extrabold text-2xl md:text-3xl shadow-[0_8px_16px_-4px_rgba(59,130,246,0.3)] group-hover:scale-110 group-hover:shadow-[0_12px_20px_-4px_rgba(59,130,246,0.5)] transition-all duration-300'>
+                      {stepNumber}
+                    </div>
+                    {/* Garis Konektor Vertikal (Opsional, untuk flow visual) */}
+                    {index !== steps.length - 1 && (
+                      <div class='absolute top-16 left-1/2 -translate-x-1/2 w-[2px] h-[calc(100%+2.5rem)] bg-indigo-100 -z-10' />
+                    )}
+                  </div>
+
+                  {/* --- Bagian Konten Teks --- */}
+                  <div class='flex flex-col space-y-3 pt-1.5'>
+                    <h3 class='text-2xl font-bold text-slate-900 group-hover:text-blue-700 transition-colors duration-300'>
+                      {stepTitle}
+                    </h3>
+                    <p class='text-base md:text-lg text-slate-600 leading-relaxed whitespace-pre-line'>
+                      {stepDesc}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            // State kosong jika belum ada data steps di CMS
+            <div class='p-8 border-2 border-dashed border-slate-300 rounded-2xl text-center text-slate-500 bg-slate-50/50'>
+              {lang === 'id'
+                ? 'Data langkah-langkah belum diisi di CMS.'
+                : 'No step data available in CMS.'}
+            </div>
+          )
+        }
+      </div>
+    </div>
+  </div>
+</section>
