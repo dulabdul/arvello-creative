@@ -1,3 +1,4 @@
+// src/components/layout/Navbar.tsx (Sesuaikan lokasi importmu jika berbeda)
 import { useState } from 'react';
 import { Menu, Zap, Globe } from 'lucide-react';
 import { Button } from '../ui/button';
@@ -6,11 +7,13 @@ import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
 interface NavbarProps {
   brandName?: string;
   currentLang: 'id' | 'en';
+  currentPath?: string; // --- FIX BUG 2: Menerima URL saat ini dari Astro
 }
 
 export default function Navbar({
   brandName = 'FasterUI',
   currentLang,
+  currentPath = '/',
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -34,9 +37,19 @@ export default function Navbar({
           { name: 'FAQ', href: '#faq' },
         ];
 
-  // Tentukan path untuk tombol switch bahasa
-  // Jika sedang di ID, tombol mengarah ke EN (/en/). Jika di EN, mengarah ke ID (/).
-  const toggleLangPath = currentLang === 'id' ? '/en/' : '/';
+  // --- FIX BUG 2: Logika Switch Bahasa Dinamis Berdasarkan URL Saat Ini ---
+  let toggleLangPath = '/';
+  // Bersihkan slash ganda jika ada
+  const safePath = currentPath.replace(/\/+/g, '/');
+
+  if (currentLang === 'id') {
+    // Jika di ID, tambahkan /en di awal URL
+    toggleLangPath = safePath === '/' ? '/en/' : `/en${safePath}`;
+  } else {
+    // Jika di EN, hapus awalan /en dari URL
+    toggleLangPath = safePath.replace(/^\/en(\/|$)/, '/') || '/';
+  }
+
   const toggleLangText = currentLang === 'id' ? 'EN' : 'ID';
 
   return (
@@ -76,7 +89,7 @@ export default function Navbar({
           </a>
         </div>
 
-        {/* Mobile Nav (Diringkas untuk contoh) */}
+        {/* Mobile Nav */}
         <div className='md:hidden'>
           <Sheet
             open={isOpen}
@@ -90,7 +103,6 @@ export default function Navbar({
               </Button>
             </SheetTrigger>
             <SheetContent side='right'>
-              {/* Tambahkan link mobile dan tombol switch bahasa di sini */}
               <a
                 href={toggleLangPath}
                 className='mt-8 flex items-center gap-2 font-bold text-lg'>

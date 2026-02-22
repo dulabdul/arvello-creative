@@ -14,7 +14,7 @@ export interface Props {
 }
 
 const { title, description, image, brandName: propBrandName, lang = 'id' } = Astro.props;
-
+const currentPath = Astro.url.pathname;
 const query = `*[_type == "siteSettings"][0]`;
 const siteSettings = (await sanityClient.fetch(query)) || {};
 
@@ -118,7 +118,12 @@ const enUrl = new URL('/en/', siteUrl).toString();
     )}
   </head>
   <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
-    <Navbar client:load brandName={finalBrandName} currentLang={lang} />
+   <Navbar 
+      client:load 
+      brandName={finalBrandName} 
+      currentLang={lang} 
+      currentPath={currentPath} 
+    />
     <main class="w-full flex-col">
       <slot />
     </main>

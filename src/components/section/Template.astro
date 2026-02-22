@@ -35,12 +35,19 @@ const subheadline = sectionData?.subheadline?.[lang] || '';
 const seeMoreText =
   sectionData?.seeMoreText?.[lang] ||
   (lang === 'id' ? 'Lihat Semua Proyek' : 'See More templates');
-const templatesLink = sectionData?.templatesPageLink || '/templates';
+// --- FIX BUG 1: DYNAMIC URL BERDASARKAN BAHASA ---
+const rawTemplatesLink = sectionData?.templatesPageLink || '/templates';
+const templatesLink =
+  lang === 'en'
+    ? rawTemplatesLink.startsWith('/en')
+      ? rawTemplatesLink
+      : `/en${rawTemplatesLink}`
+    : rawTemplatesLink.replace(/^\/en/, '');
 
 // 2. Process template Data untuk dikirim ke React
 const processedTemplates: TemplateSlideData[] = rawTemplates
-  .map((template: any) => ({
-    id: template._id,
+  .map((template: any, index: number) => ({
+    id: template._key || String(index),
     // Generate URL gambar dengan lebar yang cukup untuk retina display
     imageUrl: template.image
       ? urlFor(template.image).width(1200).height(750).fit('crop').url()
@@ -48,7 +55,8 @@ const processedTemplates: TemplateSlideData[] = rawTemplates
     imageAlt: template.image?.alt || template.title || 'template Screenshot',
     templateUrl: template.templateUrl || null,
   }))
-  .filter((p) => p.imageUrl); // Hapus item yang tidak punya gambar
+  .filter((p) => p.imageUrl)
+  .slice(0, 6); // Hapus item yang tidak punya gambar
 ---
 
 <section

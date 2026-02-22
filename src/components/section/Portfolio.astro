@@ -2,7 +2,7 @@
 // src/components/section/Portfolio.astro
 import { Button } from '@/components/ui/button';
 import { sanityClient, urlFor } from '@/lib/sanity';
-import ProjectCarousel, { type ProjectSlideData } from '../ui/projectCarousel';
+import ProjectCarousel, { type ProjectSlideData } from '../ui/projectCarousel'; // Pastikan path ini sesuai dengan file kamu (ProjectCarousel vs projectCarousel)
 
 // --- Props Definition ---
 export interface Props {
@@ -11,13 +11,11 @@ export interface Props {
 const { lang } = Astro.props;
 
 // --- Data Fetching (Parallel) ---
-let sectionData = null;
-let rawProjects = [];
+let sectionData: any = null;
+let rawProjects: any[] = [];
 
 try {
-  // Hanya butuh SATU fetch sekarang!
   sectionData = await sanityClient.fetch(`*[_type == "portfolioSection"][0]`);
-  // Ambil array projects yang ada di dalam sectionData
   rawProjects = sectionData?.projects || [];
 } catch (error) {
   console.error('Sanity Portfolio Fetch Error:', error);
@@ -33,20 +31,28 @@ const subheadline = sectionData?.subheadline?.[lang] || '';
 const seeMoreText =
   sectionData?.seeMoreText?.[lang] ||
   (lang === 'id' ? 'Lihat Semua Proyek' : 'See More Projects');
-const projectsLink = sectionData?.projectsPageLink || '/projects';
 
-// 2. Process Project Data untuk dikirim ke React
+// --- FIX BUG 1: DYNAMIC URL BERDASARKAN BAHASA ---
+const rawProjectsLink = sectionData?.projectsPageLink || '/projects';
+const projectsLink =
+  lang === 'en'
+    ? rawProjectsLink.startsWith('/en')
+      ? rawProjectsLink
+      : `/en${rawProjectsLink}`
+    : rawProjectsLink.replace(/^\/en/, '');
+
+// 2. Process Project Data untuk dikirim ke React dan Limit Max 6
 const processedProjects: ProjectSlideData[] = rawProjects
-  .map((project: any) => ({
-    id: project._id,
-    // Generate URL gambar dengan lebar yang cukup untuk retina display
+  .map((project: any, index: number) => ({
+    id: project._key || String(index),
     imageUrl: project.image
       ? urlFor(project.image).width(1200).height(750).fit('crop').url()
       : '',
     imageAlt: project.image?.alt || project.title || 'Project Screenshot',
     projectUrl: project.projectUrl || null,
   }))
-  .filter((p) => p.imageUrl); // Hapus item yang tidak punya gambar
+  .filter((p: any) => p.imageUrl)
+  .slice(0, 6);
 ---
 
 <section
@@ -80,19 +86,12 @@ const processedProjects: ProjectSlideData[] = rawProjects
 
     {/* 2. The Carousel (React Island) */}
     {
-      /* client:visible adalah strategi loading terbaik di sini. 
-        React dan data carousel hanya akan di-load ketika user 
-        men-scroll mendekati section ini. 
-    */
-    }
-    {
       processedProjects.length > 0 ? (
         <ProjectCarousel
           client:visible
           projects={processedProjects}
         />
       ) : (
-        // Fallback jika belum ada proyek di CMS
         <div class='text-center p-12 border-2 border-dashed border-slate-300 rounded-[2rem] text-slate-500'>
           {lang === 'id'
             ? 'Belum ada proyek yang ditampilkan.'
