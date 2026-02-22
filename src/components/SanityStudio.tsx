@@ -5,7 +5,7 @@ import { schemaTypes } from '../../sanity/schemaTypes';
 
 const config = defineConfig({
   name: 'default',
-  title: 'CreoSphera Admin',
+  title: 'ArVelloCreative Admin',
   projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID,
   dataset: import.meta.env.PUBLIC_SANITY_DATASET,
   basePath: '/admin',
@@ -15,6 +15,7 @@ const config = defineConfig({
         S.list()
           .title('Content Manager')
           .items([
+            // --- 1. GLOBAL SETTINGS ---
             S.listItem()
               .title('Site Settings')
               .id('siteSettings')
@@ -26,6 +27,7 @@ const config = defineConfig({
 
             S.divider(),
 
+            // --- 2. LANDING PAGE SECTIONS (Singletons) ---
             S.listItem()
               .title('Hero Section')
               .id('hero')
@@ -46,8 +48,6 @@ const config = defineConfig({
               .child(
                 S.document().schemaType('whatWeDo').documentId('whatWeDo'),
               ),
-
-            // Portfolio sekarang menjadi satu tempat (Settings + Data Proyek)
             S.listItem()
               .title('Portfolio Section')
               .id('portfolioSection')
@@ -86,13 +86,22 @@ const config = defineConfig({
                   .schemaType('contactSection')
                   .documentId('contactSection'),
               ),
+
             S.divider(),
+
+            // --- 3. BLOG COLLECTIONS (Multiple Items) ---
+            S.documentTypeListItem('post').title('Blog Posts'),
+            S.documentTypeListItem('category').title('Blog Categories'),
+            S.documentTypeListItem('author').title('Blog Authors'),
+
+            S.divider(),
+
+            // --- 4. HIDE DUPLICATES ---
             ...S.documentTypeListItems().filter(
               (listItem) =>
                 ![
                   'siteSettings',
                   'hero',
-                  'service',
                   'about',
                   'howItWorks',
                   'whatWeDo',
@@ -101,6 +110,9 @@ const config = defineConfig({
                   'templateSection',
                   'faqSection',
                   'contactSection',
+                  'post',
+                  'category',
+                  'author',
                 ].includes(listItem.getId()!),
             ),
           ]),

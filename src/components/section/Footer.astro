@@ -1,7 +1,7 @@
 ---
 // src/components/layout/Footer.astro
 import { sanityClient } from '@/lib/sanity';
-
+import { getNavLinks } from '@/config/navigation';
 export interface Props {
   lang: 'id' | 'en';
 }
@@ -44,25 +44,7 @@ const waMsg =
 const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMsg)}`;
 
 // --- Localized Navigation Links ---
-const navLinks =
-  lang === 'id'
-    ? [
-        { name: 'Beranda', href: '#home' },
-        { name: 'Layanan', href: '#services' },
-        { name: 'Cara Kerja', href: '#how-it-works' },
-        { name: 'Portofolio', href: '#portfolio' },
-        { name: 'Templates', href: '#template' },
-        { name: 'FAQ', href: '#faq' },
-      ]
-    : [
-        { name: 'Home', href: '#home' },
-        { name: 'Services', href: '#services' },
-        { name: 'How It Works', href: '#how-it-works' },
-        { name: 'Porfolio', href: '#portfolio' },
-        { name: 'Templates', href: '#template' },
-        { name: 'FAQ', href: '#faq' },
-      ];
-
+const navLinks = getNavLinks(lang);
 const currentYear = new Date().getFullYear();
 const madeWithLove =
   lang === 'id' ? 'Dibuat dengan cinta oleh' : 'Made with love powered by';

@@ -1,0 +1,224 @@
+---
+// src/pages/blog/index.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { sanityClient, urlFor } from '@/lib/sanity';
+
+const lang = 'id';
+
+// --- Data Fetching ---
+let posts: any[] = [];
+
+try {
+  const query = `
+    *[_type == "post"] | order(publishedAt desc) {
+      _id,
+      title,
+      slug,
+      mainImage,
+      publishedAt,
+      excerpt,
+      category->{title},
+      author->{name, image}
+    }
+  `;
+  posts = await sanityClient.fetch(query);
+} catch (error) {
+  console.error('Sanity Blog Index Fetch Error:', error);
+}
+
+// --- LOGIKA RANDOM FEATURED POST ---
+let featuredPost = null;
+let gridPosts: any[] = [];
+
+if (posts.length > 0) {
+  const randomIndex = Math.floor(Math.random() * posts.length);
+  featuredPost = posts[randomIndex];
+  gridPosts = posts.filter((_, index) => index !== randomIndex);
+}
+
+// Static Text
+const pageTitle = 'Sorotan Hari Ini:\nTetap Terkini';
+const pageDesc =
+  'Jelajahi berita terbaru dari seluruh penjuru. Kami membawakan Anda pembaruan terkini tentang peristiwa, tren, dan cerita paling signifikan. Temukan dunia melalui liputan kami.';
+---
+
+<BaseLayout
+  lang={lang}
+  title='Blog & Insights'
+  description={pageDesc}>
+  <div
+    class='relative pt-32 pb-20 md:pt-48 md:pb-32 bg-slate-50 min-h-screen overflow-hidden'>
+    <div class='container mx-auto px-4 max-w-7xl relative z-10'>
+      {/* --- HEADER SECTION --- */}
+      <div
+        class='flex flex-col lg:flex-row gap-8 lg:gap-16 items-start lg:items-center mb-16 md:mb-24 border-b border-slate-200 pb-12 animate-in fade-in slide-in-from-bottom-8 duration-700'>
+        <h1
+          class='text-5xl md:text-6xl lg:text-7xl font-extrabold text-slate-900 tracking-tight leading-tight lg:w-1/2 whitespace-pre-line'>
+          {pageTitle}
+        </h1>
+        <p class='text-lg text-slate-500 leading-relaxed lg:w-1/2'>
+          {pageDesc}
+        </p>
+      </div>
+
+      {/* --- FEATURED POST (Polos Sesuai Request) --- */}
+      {
+        featuredPost && (
+          <div class='mb-20 animate-in fade-in slide-in-from-bottom-12 duration-700 delay-100'>
+            <div class='grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center'>
+              <a
+                href={`/blog/${featuredPost.slug.id.current}`}
+                class='group relative aspect-[4/3] lg:aspect-square overflow-hidden rounded-[2rem] shadow-lg border border-slate-100 block'>
+                <img
+                  src={
+                    featuredPost.mainImage
+                      ? urlFor(featuredPost.mainImage)
+                          .width(1200)
+                          .height(1200)
+                          .url()
+                      : ''
+                  }
+                  alt={featuredPost.title?.[lang] || 'Featured'}
+                  class='w-full h-full object-cover group-hover:scale-105 transition-transform duration-700'
+                />
+                <div class='absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500' />
+              </a>
+
+              <div class='flex flex-col justify-center'>
+                <a
+                  href={`/blog/${featuredPost.slug.id.current}`}
+                  class='group'>
+                  {/* CSS capitalize ditambahkan di sini */}
+                  <h2 class='text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 group-hover:text-blue-600 transition-colors mb-6 leading-tight capitalize'>
+                    {featuredPost.title?.[lang]}
+                  </h2>
+                </a>
+                <p class='text-lg text-slate-500 mb-10 leading-relaxed line-clamp-3'>
+                  {featuredPost.excerpt?.[lang]}
+                </p>
+
+                <div class='grid grid-cols-2 md:grid-cols-3 gap-6 mb-10 pb-10 border-b border-slate-200'>
+                  <div>
+                    <p class='text-sm text-slate-400 mb-1'>Kategori</p>
+                    <p class='font-semibold text-slate-900'>
+                      {featuredPost.category?.title?.[lang] || 'Umum'}
+                    </p>
+                  </div>
+                  <div>
+                    <p class='text-sm text-slate-400 mb-1'>Tanggal Publikasi</p>
+                    <p class='font-semibold text-slate-900'>
+                      {new Date(featuredPost.publishedAt).toLocaleDateString(
+                        'id-ID',
+                        { day: 'numeric', month: 'long', year: 'numeric' },
+                      )}
+                    </p>
+                  </div>
+                  <div class='hidden md:block'>
+                    <p class='text-sm text-slate-400 mb-1'>Penulis</p>
+                    <p class='font-semibold text-slate-900'>
+                      {featuredPost.author?.name || 'Tim Redaksi'}
+                    </p>
+                  </div>
+                </div>
+
+                <div>
+                  <a
+                    href={`/blog/${featuredPost.slug.id.current}`}
+                    class='inline-flex items-center justify-center px-8 py-4 text-sm font-bold border border-slate-300 rounded-full text-slate-700 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300'>
+                    Baca Selengkapnya
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      }
+
+      {/* --- GRID POSTS (Dengan Glassmorphism Category) --- */}
+      {
+        gridPosts.length > 0 && (
+          <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-10'>
+            {gridPosts.map((post: any, index: number) => {
+              const title = post.title?.[lang] || 'Untitled Post';
+              const category = post.category?.title?.[lang] || 'Umum';
+              const imageUrl = post.mainImage
+                ? urlFor(post.mainImage).width(800).height(500).url()
+                : '';
+
+              if (!post.slug?.id?.current) return null;
+
+              return (
+                <div
+                  class='group flex flex-col animate-in fade-in slide-in-from-bottom-8 fill-mode-both'
+                  style={`animation-delay: ${index * 100}ms;`}>
+                  {/* Image Wrapper */}
+                  <a
+                    href={`/blog/${post.slug.id.current}`}
+                    class='relative aspect-[16/10] overflow-hidden rounded-[1.5rem] mb-6 block border border-slate-100 shadow-sm'>
+                    {imageUrl ? (
+                      <img
+                        src={imageUrl}
+                        alt={title}
+                        class='w-full h-full object-cover group-hover:scale-105 transition-transform duration-700'
+                        loading='lazy'
+                      />
+                    ) : (
+                      <div class='w-full h-full bg-slate-200 flex items-center justify-center text-slate-400'>
+                        No Image
+                      </div>
+                    )}
+
+                    {/* --- GLASSMORPHISM CATEGORY BADGE --- */}
+                    <div class='absolute top-4 left-4 z-10 px-3 py-1.5 rounded-full bg-white/60 backdrop-blur-md border border-white/40 shadow-[0_4px_12px_rgba(0,0,0,0.05)] text-xs font-bold text-slate-900 uppercase tracking-wider'>
+                      {category}
+                    </div>
+                  </a>
+
+                  {/* Content */}
+                  {/* CSS capitalize ditambahkan di sini, margin bottom disesuaikan */}
+                  <h3 class='text-xl font-bold text-slate-900 mb-6 line-clamp-2 capitalize flex-grow'>
+                    <a
+                      href={`/blog/${post.slug.id.current}`}
+                      class='hover:text-blue-600 transition-colors'>
+                      {title}
+                    </a>
+                  </h3>
+
+                  {/* Read More Link */}
+                  <div class='mt-auto flex items-center justify-between'>
+                    <a
+                      href={`/blog/${post.slug.id.current}`}
+                      class='inline-flex items-center text-sm font-semibold border border-slate-200 rounded-full px-5 py-2.5 text-slate-600 hover:bg-slate-900 hover:text-white hover:border-slate-900 transition-all duration-300'>
+                      Baca Selengkapnya
+                      <svg
+                        class='w-4 h-4 ml-2'
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        stroke-width='2'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'>
+                        <path d='M7 17L17 7' />
+                        <path d='M7 7h10v10' />
+                      </svg>
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )
+      }
+
+      {/* Fallback Kosong */}
+      {
+        posts.length === 0 && (
+          <div class='p-20 border-2 border-dashed border-slate-200 rounded-[3rem] text-center text-slate-500 bg-white/50 backdrop-blur-sm'>
+            Belum ada artikel yang dipublikasikan.
+          </div>
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>
