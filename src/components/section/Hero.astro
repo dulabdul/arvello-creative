@@ -1,10 +1,9 @@
 ---
 // src/components/section/Hero.astro
 import { Image } from 'astro:assets';
-import { Button } from '@/components/ui/button';
+// Gunakan buttonVariants untuk menghindari error <a><Button> yang kita bahas sebelumnya
+import { buttonVariants } from '@/components/ui/button';
 
-// 1. Import gambar dari folder local asset kamu
-// Pastikan nama file dan ekstensinya sesuai dengan yang kamu miliki
 import heroBackground from '@/assets/hero-bg1.png';
 
 interface Props {
@@ -14,7 +13,6 @@ interface Props {
 }
 
 const {
-  // Fallback jika CMS belum diisi
   headline = 'Awesome UI Dark <br/> Template for <br/> Webflow Agency',
   ctaText = 'Get in Touch',
   ctaLink = '#contact',
@@ -24,32 +22,33 @@ const {
 <section
   id='home'
   class='relative pt-40 pb-32 md:pt-56 md:pb-40 overflow-hidden flex flex-col justify-center min-h-screen'>
-  {/* Local Background Image menggunakan Astro Image untuk optimasi otomatis */}
   <div class='absolute inset-0 z-0 pointer-events-none'>
+    {/* --- PERBAIKAN CRITICAL LCP --- */}
     <Image
       src={heroBackground}
       alt='Agency Hero Background'
       class='w-full h-full object-cover'
-      quality={90}
-      format='webp'
+      quality={80}
+      decoding='sync'
     />
-
-    {/* Overlay tipis putih/slate agar teks gelap tetap terbaca jelas */}
     <div class='absolute inset-0 bg-slate-50/30'></div>
   </div>
 
   <div
     class='container mx-auto px-4 flex flex-col items-center text-center relative z-10'>
     <h1
-      class='text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-10'
+      class='text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-10 text-balance'
       set:html={headline}
     />
 
-    <a href={ctaLink}>
-      <Button
-        className='bg-[#1E1E24] hover:bg-black text-white px-10 h-14 text-base font-semibold rounded-2xl shadow-lg transition-transform hover:scale-105 duration-300'>
-        {ctaText}
-      </Button>
+    {/* Menggunakan buttonVariants agar struktur HTML valid dan aksesibel */}
+    <a
+      href={ctaLink}
+      class={buttonVariants({
+        className:
+          'bg-[#1E1E24] hover:bg-black text-white px-10 h-14 text-base font-semibold rounded-2xl shadow-lg transition-transform hover:scale-105 duration-300',
+      })}>
+      {ctaText}
     </a>
   </div>
 </section>
