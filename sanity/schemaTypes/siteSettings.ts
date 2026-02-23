@@ -12,6 +12,15 @@ export default defineType({
     { name: 'tracking', title: 'Analytics & Tracking' },
   ],
   fields: [
+    defineField({
+      name: 'publishNotice',
+      title: '⚠️ Informasi Sistem',
+      type: 'string',
+      description:
+        'Setiap kali Anda mempublikasikan perubahan (Publish), sistem membutuhkan waktu 1-3 menit untuk memperbarui server global. Silakan tunggu sejenak sebelum me-refresh halaman website Anda.',
+      readOnly: true, // Klien tidak bisa mengedit teks ini
+      initialValue: 'Proses Sinkronisasi Server Global',
+    }),
     // --- GENERAL (Universal, tidak perlu bahasa) ---
     defineField({
       name: 'brandName',
