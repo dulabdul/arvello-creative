@@ -69,21 +69,6 @@ const enUrl = new URL('/en/', siteUrl).toString();
     <link rel="alternate" hreflang="id" href={idUrl} />
     <link rel="alternate" hreflang="en" href={enUrl} />
     <link rel="alternate" hreflang="x-default" href={enUrl} />
-
-    {lang === 'id' && (
-      <script is:inline>
-        (function() {
-          if (!localStorage.getItem('lang_redirected')) {
-            const userLang = navigator.language || navigator.userLanguage;
-            if (!userLang.toLowerCase().includes('id')) {
-              localStorage.setItem('lang_redirected', 'true');
-              window.location.replace('/en/');
-            }
-          }
-        })();
-      </script>
-    )}
-
     {siteSettings.googleSiteVerification && (
       <meta name="google-site-verification" content={siteSettings.googleSiteVerification} />
     )}
