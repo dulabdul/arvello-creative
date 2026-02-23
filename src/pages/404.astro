@@ -1,0 +1,82 @@
+---
+// src/pages/404.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+// Kita default ke bahasa Inggris atau Indonesia untuk halaman statis ini.
+// Karena 404 sifatnya global, kita gunakan teks bilingual sederhana atau bahasa utama.
+const lang = 'en';
+const title = 'Page Not Found';
+const description =
+  "Sorry, the page you are looking for doesn't exist or has been moved.";
+
+// NOTE UNTUK ANDA: Ganti URL ini dengan path gambar ilustrasi 404 Anda sendiri di masa depan.
+// Misal: /images/illustration-404.svg
+const illustrationUrl = '/images/peeps.png';
+---
+
+<BaseLayout
+  lang={lang}
+  title={title}
+  description={description}
+  noIndex={true}>
+  {
+    /* Container utama menggunakan min-h-[80vh] agar konten berada di tengah
+      secara vertikal di antara Navbar dan Footer.
+  */
+  }
+  <main
+    class='min-h-[80vh] flex flex-col items-center justify-center text-center px-4 pt-24 pb-12 relative overflow-hidden bg-slate-50'>
+    {/* Background Ornament (Opsional - agar senada dengan halaman lain) */}
+    <div
+      class='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-blue-100/40 rounded-full blur-3xl pointer-events-none -z-0'>
+    </div>
+
+    <div
+      class='relative z-10 flex flex-col items-center max-w-lg mx-auto animate-in fade-in slide-in-from-bottom-8 duration-700'>
+      {/* 1. Gambar Ilustrasi di Tengah */}
+      <img
+        src={illustrationUrl}
+        alt='404 Page Not Found'
+        class='w-full max-w-sm md:max-w-md mb-8 drop-shadow-sm'
+        width='600'
+        height='400'
+      />
+
+      {/* 2. Teks Heading & Deskripsi */}
+      <h1
+        class='text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4'>
+        Page Not Found
+      </h1>
+      <p class='text-lg text-slate-500 mb-10 leading-relaxed text-balance'>
+        Oops! The page you are looking for might have been removed, had its name
+        changed, or is temporarily unavailable.
+      </p>
+
+      {/* 3. Tombol Back Simple & Minimalis (Bukan Button Block) */}
+      {
+        /* Kita gunakan 'group' pada parent 'a' untuk mengontrol animasi icon anak */
+      }
+      <a
+        href='/'
+        class='group inline-flex items-center gap-2.5 text-base font-semibold text-slate-600 hover:text-blue-600 transition-colors duration-300 py-2'>
+        {/* Ikon Panah Kiri (Lucide Icon) - Bergeser sedikit saat di-hover */}
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='20'
+          height='20'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          class='text-slate-400 group-hover:text-blue-600 group-hover:-translate-x-1 transition-all duration-300'>
+          <path d='m12 19-7-7 7-7'></path>
+          <path d='M19 12H5'></path>
+        </svg>
+
+        <span>Back to Homepage</span>
+      </a>
+    </div>
+  </main>
+</BaseLayout>
