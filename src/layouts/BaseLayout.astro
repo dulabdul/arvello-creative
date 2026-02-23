@@ -14,42 +14,43 @@ export interface Props {
   noIndex?: boolean;
 }
 
-const { title, description, image, brandName: propBrandName, noIndex ,lang = 'id' } = Astro.props;
+const { title, description, image, brandName: propBrandName, noIndex, lang = 'id' } = Astro.props;
 const currentPath = Astro.url.pathname;
+
+// Ambil data CMS
 const query = `*[_type == "siteSettings"][0]`;
 const siteSettings = (await sanityClient.fetch(query)) || {};
 
+// --- RESOLUSI TEKS SEO ---
 const finalBrandName = propBrandName || siteSettings.brandName || 'Agency Profile';
 const baseSeoTitle = siteSettings.title || finalBrandName;
 
-// EKSTRAKSI BAHASA SECARA DINAMIS 
-// Gunakan optional chaining untuk mencegah error jika kolom di CMS kosong
 const fallbackSuffix = siteSettings.seoTitleSuffix?.[lang] || '';
 const seoSuffix = fallbackSuffix ? ` ${fallbackSuffix}` : '';
 const finalTitle = title ? `${title} - ${baseSeoTitle}` : `${baseSeoTitle}${seoSuffix}`;
 
 const defaultDesc = siteSettings.description?.[lang] || 'Professional Agency services.';
 const finalDesc = description || defaultDesc;
-
 const finalKeywords = siteSettings.keywords?.[lang] || '';
 
-// RESOLUSI URL & GAMBAR
+// --- RESOLUSI URL & GAMBAR ---
 const siteUrl = siteSettings.siteUrl || Astro.site || Astro.url.origin;
 const canonicalURL = new URL(Astro.url.pathname, siteUrl).toString();
 
 const imageSource = image || siteSettings.ogImage;
 const finalOgImage = imageSource ? urlFor(imageSource).width(1200).height(630).format('webp').url() : '';
 
+// --- LOGIKA ROBOTS & INDEXING ---
 const globalIsIndexable = siteSettings?.allowIndexing !== false;
+const robotsContent = (noIndex || !globalIsIndexable) ? 'noindex, nofollow' : 'index, follow';
 
-// LOGIKA BARU: Gabungan dari Prop lokal (noIndex) dan Setting CMS Global
-const robotsContent = (noIndex || !globalIsIndexable) 
-  ? 'noindex, nofollow' 
-  : 'index, follow';
-
-// Generate Hreflang URLs
+// --- HREFLANG URLs ---
 const idUrl = new URL('/', siteUrl).toString();
 const enUrl = new URL('/en/', siteUrl).toString();
+
+// GTM ID (Ganti gaId menjadi gtmId di Sanity nanti, atau hardcode di sini sementara)
+// Contoh fallback: const gtmId = siteSettings.gtmId || 'GTM-XXXXXXX';
+const gtmId = siteSettings.gtmId; 
 ---
 
 <!DOCTYPE html>
@@ -58,6 +59,10 @@ const enUrl = new URL('/en/', siteUrl).toString();
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
+    {/* --- PRECONNECT UNTUK PERFORMA (Best Practice PageSpeed) --- */}
+    <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
+    {gtmId && <link rel="preconnect" href="https://www.googletagmanager.com" />}
+
     <title>{finalTitle}</title>
     <meta name="title" content={finalTitle} />
     <meta name="description" content={finalDesc} />
@@ -66,13 +71,16 @@ const enUrl = new URL('/en/', siteUrl).toString();
     <link rel="canonical" href={canonicalURL} />
     <meta name="robots" content={robotsContent} />
 
+    {/* --- MULTILINGUAL SEO --- */}
     <link rel="alternate" hreflang="id" href={idUrl} />
     <link rel="alternate" hreflang="en" href={enUrl} />
     <link rel="alternate" hreflang="x-default" href={enUrl} />
+    
     {siteSettings.googleSiteVerification && (
       <meta name="google-site-verification" content={siteSettings.googleSiteVerification} />
     )}
 
+    {/* --- OPEN GRAPH (FACEBOOK/LINKEDIN) --- */}
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:title" content={finalTitle} />
@@ -80,6 +88,7 @@ const enUrl = new URL('/en/', siteUrl).toString();
     <meta property="og:site_name" content={baseSeoTitle} />
     {finalOgImage && <meta property="og:image" content={finalOgImage} />}
 
+    {/* --- TWITTER CARDS --- */}
     <meta property="twitter:card" content="summary_large_image" />
     <meta property="twitter:url" content={canonicalURL} />
     <meta property="twitter:title" content={finalTitle} />
@@ -87,7 +96,8 @@ const enUrl = new URL('/en/', siteUrl).toString();
     {finalOgImage && <meta property="twitter:image" content={finalOgImage} />}
     {siteSettings.twitterHandle && <meta property="twitter:site" content={siteSettings.twitterHandle} />}
 
-    <script type="application/ld+json" set:html={JSON.stringify({
+    {/* --- SCHEMA MARKUP (JSON-LD) --- */}
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": baseSeoTitle,
@@ -95,28 +105,42 @@ const enUrl = new URL('/en/', siteUrl).toString();
       "description": finalDesc
     })} />
 
-    {siteSettings.gaId && (
-      <>
-        <script async src={`https://www.googletagmanager.com/gtag/js?id=${siteSettings.gaId}`}></script>
-        <script define:vars={{ gaId: siteSettings.gaId }}>
-          window.dataLayer = window.dataLayer || [];
-          function gtag(){dataLayer.push(arguments);}
-          gtag('js', new Date());
-          gtag('config', gaId);
-        </script>
-      </>
+    {/* --- GOOGLE TAG MANAGER (Head) --- */}
+    {gtmId && (
+      <script is:inline define:vars={{ gtmId }}>
+        (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+        new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+        j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+        'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+        })(window,document,'script','dataLayer',gtmId);
+      </script>
     )}
   </head>
   <body class="min-h-screen bg-slate-50 font-sans text-slate-900 antialiased">
-   <Navbar 
+    
+    {/* --- GOOGLE TAG MANAGER (Body/NoScript) --- */}
+    {gtmId && (
+      <noscript>
+        <iframe 
+          src={`https://www.googletagmanager.com/ns.html?id=${gtmId}`} 
+          height="0" 
+          width="0" 
+          style="display:none;visibility:hidden"
+        ></iframe>
+      </noscript>
+    )}
+
+    <Navbar 
       client:load 
       brandName={finalBrandName} 
       currentLang={lang} 
       currentPath={currentPath} 
     />
+    
     <main class="w-full flex-col">
       <slot />
     </main>
+    
     <Footer lang={lang} />
   </body>
 </html>
