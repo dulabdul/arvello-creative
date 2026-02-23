@@ -11,9 +11,10 @@ export interface Props {
   image?: any;
   brandName?: string;
   lang?: 'id' | 'en'; 
+  noIndex?: boolean;
 }
 
-const { title, description, image, brandName: propBrandName, lang = 'id' } = Astro.props;
+const { title, description, image, brandName: propBrandName, noIndex ,lang = 'id' } = Astro.props;
 const currentPath = Astro.url.pathname;
 const query = `*[_type == "siteSettings"][0]`;
 const siteSettings = (await sanityClient.fetch(query)) || {};
@@ -39,8 +40,12 @@ const canonicalURL = new URL(Astro.url.pathname, siteUrl).toString();
 const imageSource = image || siteSettings.ogImage;
 const finalOgImage = imageSource ? urlFor(imageSource).width(1200).height(630).format('webp').url() : '';
 
-const isIndexable = siteSettings.allowIndexing !== false;
-const robotsContent = isIndexable ? 'index, follow' : 'noindex, nofollow';
+const globalIsIndexable = siteSettings?.allowIndexing !== false;
+
+// LOGIKA BARU: Gabungan dari Prop lokal (noIndex) dan Setting CMS Global
+const robotsContent = (noIndex || !globalIsIndexable) 
+  ? 'noindex, nofollow' 
+  : 'index, follow';
 
 // Generate Hreflang URLs
 const idUrl = new URL('/', siteUrl).toString();
