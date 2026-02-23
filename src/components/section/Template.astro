@@ -1,6 +1,6 @@
 ---
 // src/components/section/template.astro
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { sanityClient, urlFor } from '@/lib/sanity';
 import TemplateCarousel, {
   type TemplateSlideData,
@@ -34,7 +34,7 @@ const headline =
 const subheadline = sectionData?.subheadline?.[lang] || '';
 const seeMoreText =
   sectionData?.seeMoreText?.[lang] ||
-  (lang === 'id' ? 'Lihat Semua Proyek' : 'See More templates');
+  (lang === 'id' ? 'Lihat Semua Templates' : 'See More templates');
 // --- FIX BUG 1: DYNAMIC URL BERDASARKAN BAHASA ---
 const rawTemplatesLink = sectionData?.templatesPageLink || '/templates';
 const templatesLink =
@@ -113,12 +113,15 @@ const processedTemplates: TemplateSlideData[] = rawTemplates
 
     {/* 3. Footer Section ("See More" Button) */}
     <div class='text-center mt-12 md:mt-16'>
-      <a href={templatesLink}>
-        <Button
-          size='lg'
-          className='rounded-full px-8 font-semibold bg-blue-600 hover:bg-blue-700'>
-          {seeMoreText}
-        </Button>
+      <a
+        href={templatesLink}
+        aria-label='View all our projects'
+        class={buttonVariants({
+          size: 'lg',
+          className:
+            'rounded-full px-8 font-semibold bg-blue-600 hover:bg-blue-700 text-white',
+        })}>
+        {seeMoreText}
       </a>
     </div>
   </div>

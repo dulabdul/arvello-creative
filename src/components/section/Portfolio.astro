@@ -1,6 +1,6 @@
 ---
 // src/components/section/Portfolio.astro
-import { Button } from '@/components/ui/button';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { sanityClient, urlFor } from '@/lib/sanity';
 import ProjectCarousel, { type ProjectSlideData } from '../ui/projectCarousel'; // Pastikan path ini sesuai dengan file kamu (ProjectCarousel vs projectCarousel)
 
@@ -102,12 +102,15 @@ const processedProjects: ProjectSlideData[] = rawProjects
 
     {/* 3. Footer Section ("See More" Button) */}
     <div class='text-center mt-12 md:mt-16'>
-      <a href={projectsLink}>
-        <Button
-          size='lg'
-          className='rounded-full px-8 font-semibold bg-blue-600 hover:bg-blue-700'>
-          {seeMoreText}
-        </Button>
+      <a
+        href={projectsLink}
+        aria-label='View all our projects'
+        class={buttonVariants({
+          size: 'lg',
+          className:
+            'rounded-full px-8 font-semibold bg-blue-600 hover:bg-blue-700 text-white',
+        })}>
+        {seeMoreText}
       </a>
     </div>
   </div>
