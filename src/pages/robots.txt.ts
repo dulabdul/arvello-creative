@@ -2,7 +2,7 @@
 import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = ({ request }) => {
-  const siteUrl = new URL(request.url).origin;
+  const siteUrl = import.meta.env.SITE || 'https://www.arvellocreative.com';
   const robotsTxt = `
 User-agent: *
 Allow: /

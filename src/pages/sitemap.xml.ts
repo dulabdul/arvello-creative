@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request }) => {
   // Mendapatkan root URL secara dinamis (misal: https://arvellocreative.com)
-  const siteUrl = new URL(request.url).origin;
+  const siteUrl = import.meta.env.SITE || 'https://www.arvellocreative.com';
   const posts = await sanityClient.fetch(`
     *[_type == "post"] {
       _updatedAt,
