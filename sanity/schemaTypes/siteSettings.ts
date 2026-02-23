@@ -107,5 +107,47 @@ export default defineType({
       type: 'string',
       fieldset: 'tracking',
     }),
+
+    defineField({
+      name: 'paymentMethods',
+      title: 'Payment Channels (Footer)',
+      description: 'Tambahkan logo pembayaran (Bank, E-Wallet, dll)',
+      type: 'array',
+      of: [
+        {
+          type: 'object',
+          fields: [
+            {
+              name: 'categoryName',
+              title: 'Category Name',
+              type: 'string',
+              description: 'Contoh: Bank, E-Wallet, Credit Card',
+            },
+            {
+              name: 'logos',
+              title: 'Payment Logos',
+              type: 'array',
+              of: [
+                {
+                  type: 'object',
+                  fields: [
+                    {
+                      name: 'name',
+                      title: 'Payment Name',
+                      type: 'string',
+                      description: 'Contoh: BCA, Mandiri, OVO',
+                    },
+                    { name: 'image', title: 'Logo', type: 'image' },
+                  ],
+                },
+              ],
+            },
+          ],
+          preview: {
+            select: { title: 'categoryName' },
+          },
+        },
+      ],
+    }),
   ],
 });

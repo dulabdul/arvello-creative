@@ -1,0 +1,106 @@
+---
+// src/pages/refund-policy.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const lang = 'id';
+const title = 'Kebijakan Pengembalian Dana';
+const description =
+  'Kebijakan pengembalian dana dan pembatalan proyek untuk layanan digital kami.';
+const lastUpdated = 'Pembaruan Terakhir: 23 Februari 2026';
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${title} | Legal`}
+  description={description}>
+  <main class='pt-32 md:pt-48 pb-20 bg-slate-50 min-h-screen'>
+    <div class='container mx-auto px-4 max-w-4xl'>
+      <div
+        class='bg-white rounded-[2rem] p-8 md:p-12 lg:p-16 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100'>
+        <header
+          class='mb-12 border-b border-slate-100 pb-10 text-center md:text-left'>
+          <h1
+            class='text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight'>
+            {title}
+          </h1>
+          <p class='text-slate-500 font-medium'>{lastUpdated}</p>
+        </header>
+
+        {
+          /* Menggunakan Tailwind Prose agar format paragraf, heading, dan list otomatis rapi */
+        }
+        <div
+          class='prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-blue-600'>
+          <p>
+            Terima kasih telah mempercayakan kebutuhan digital dan pengembangan
+            proyek Anda kepada tim kami. Kami selalu berusaha memberikan hasil
+            kerja dengan kualitas terbaik dan berdedikasi penuh terhadap
+            kesuksesan proyek klien kami.
+          </p>
+
+          <h2>1. Sifat Layanan Kami</h2>
+          <p>
+            Layanan yang kami tawarkan berupa produk digital kustom, desain
+            antarmuka, pengembangan situs web, serta perangkat lunak. Karena
+            sifat layanan ini yang melibatkan alokasi waktu, tenaga ahli, dan
+            sumber daya komputasi secara langsung sejak detik pertama proyek
+            dimulai, pekerjaan yang telah kami lakukan tidak dapat
+            "dikembalikan" seperti halnya barang fisik.
+          </p>
+
+          <h2>2. Kebijakan Tanpa Pengembalian Dana (No Refund)</h2>
+          <p>
+            Berdasarkan alasan di atas, kami memberlakukan kebijakan <strong
+              >TIDAK ADA PENGEMBALIAN DANA (NO REFUND)</strong
+            > secara mutlak untuk semua layanan, deposit (Down Payment), atau pembayaran
+            penuh yang telah dibayarkan kepada kami.
+          </p>
+          <p>
+            Saat Anda menyetujui penawaran kami, menyetujui ruang lingkup kerja
+            (Scope of Work), atau melakukan pembayaran, Anda sepenuhnya memahami
+            bahwa dana yang telah dibayarkan tidak dapat dikembalikan dengan
+            alasan apa pun, termasuk namun tidak terbatas pada:
+          </p>
+          <ul>
+            <li>Perubahan pikiran atau pembatalan sepihak dari pihak klien.</li>
+            <li>
+              Perubahan arah bisnis, internal perusahaan, atau strategi klien
+              yang membuat proyek tidak lagi dibutuhkan.
+            </li>
+            <li>
+              Keterlambatan atau terhentinya proyek yang disebabkan oleh
+              kurangnya respons, materi, konten, atau aset dari pihak klien.
+            </li>
+          </ul>
+
+          <h2>3. Komitmen Revisi & Kepuasan Klien</h2>
+          <p>
+            Meskipun kami tidak memberikan pengembalian dana, kami sangat
+            berkomitmen terhadap kepuasan Anda. Kami menyediakan siklus revisi
+            yang terstruktur seperti yang disepakati dalam kontrak kerja awal.
+            Jika ada hasil kerja yang belum sesuai dengan spesifikasi yang
+            disepakati, tim kami akan melakukan perbaikan tanpa biaya tambahan,
+            selama hal tersebut tidak menyimpang dari ruang lingkup proyek awal.
+          </p>
+
+          <h2>4. Penghentian Proyek di Tengah Jalan</h2>
+          <p>
+            Jika Anda memutuskan untuk menghentikan proyek sebelum selesai, Anda
+            tidak berkewajiban untuk melunasi sisa tagihan tahap selanjutnya
+            (jika ada dan jika pekerjaan tahap tersebut belum dimulai). Namun,
+            deposit awal atau pembayaran untuk tahapan/<em>milestone</em> yang sudah
+            berjalan akan hangus dan tidak dapat diklaim kembali.
+          </p>
+
+          <h2>5. Bantuan & Dukungan</h2>
+          <p>
+            Jika Anda mengalami kendala terkait proyek atau memiliki pertanyaan
+            lebih lanjut mengenai kebijakan ini, tim kami selalu terbuka untuk
+            berdiskusi demi mencari solusi terbaik (<em>win-win solution</em>).
+            Silakan hubungi kami melalui formulir kontak atau email resmi kami.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>

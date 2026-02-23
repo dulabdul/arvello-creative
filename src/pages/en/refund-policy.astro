@@ -1,0 +1,103 @@
+---
+// src/pages/en/refund-policy.astro
+import BaseLayout from '@/layouts/BaseLayout.astro';
+
+const lang = 'en';
+const title = 'Refund Policy';
+const description =
+  'Our refund and project cancellation policy for digital services.';
+const lastUpdated = 'Last Updated: February 23, 2026';
+---
+
+<BaseLayout
+  lang={lang}
+  title={`${title} | Legal`}
+  description={description}>
+  <main class='pt-32 md:pt-48 pb-20 bg-slate-50 min-h-screen'>
+    <div class='container mx-auto px-4 max-w-4xl'>
+      <div
+        class='bg-white rounded-[2rem] p-8 md:p-12 lg:p-16 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100'>
+        <header
+          class='mb-12 border-b border-slate-100 pb-10 text-center md:text-left'>
+          <h1
+            class='text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight mb-4 leading-tight'>
+            {title}
+          </h1>
+          <p class='text-slate-500 font-medium'>{lastUpdated}</p>
+        </header>
+
+        <div
+          class='prose prose-lg prose-slate max-w-none prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-blue-600'>
+          <p>
+            Thank you for trusting us with your digital needs and project
+            development. We constantly strive to deliver the highest quality of
+            work and are fully dedicated to the success of our clients'
+            projects.
+          </p>
+
+          <h2>1. The Nature of Our Services</h2>
+          <p>
+            The services we offer involve custom digital products, interface
+            design, website development, and software engineering. Because the
+            nature of these services requires the immediate allocation of time,
+            expert labor, and computing resources from the moment a project
+            begins, the work performed cannot be "returned" in the way physical
+            goods can.
+          </p>
+
+          <h2>2. No Refund Policy</h2>
+          <p>
+            For the reasons outlined above, we enforce a strict <strong
+              >NO REFUND POLICY</strong
+            > for all services, initial deposits (Down Payments), or full payments
+            made to us.
+          </p>
+          <p>
+            By accepting our proposal, agreeing to the Scope of Work, or making
+            a payment, you fully understand and agree that the funds paid are
+            non-refundable under any circumstances, including but not limited
+            to:
+          </p>
+          <ul>
+            <li>Change of mind or unilateral cancellation by the client.</li>
+            <li>
+              Changes in business direction, internal structure, or client
+              strategy that render the project no longer necessary.
+            </li>
+            <li>
+              Project delays or suspension caused by a lack of response,
+              materials, content, or assets from the client.
+            </li>
+          </ul>
+
+          <h2>3. Commitment to Revisions & Satisfaction</h2>
+          <p>
+            Although we do not offer refunds, we are deeply committed to your
+            satisfaction. We provide structured revision cycles as agreed upon
+            in our initial contract. If any deliverable does not meet the
+            agreed-upon specifications, our team will make the necessary
+            corrections at no additional cost, provided it does not deviate from
+            the original Scope of Work.
+          </p>
+
+          <h2>4. Project Termination</h2>
+          <p>
+            If you decide to terminate a project before completion, you are not
+            obligated to pay the remaining balance for future phases (provided
+            work on those phases has not commenced). However, any initial
+            deposit or payments made for ongoing or completed milestones are
+            forfeited and cannot be reclaimed.
+          </p>
+
+          <h2>5. Help & Support</h2>
+          <p>
+            If you encounter any issues related to your project or have further
+            questions regarding this policy, our team is always open to
+            discussion to find the best possible win-win solution. Please reach
+            out to us via our contact form or official email.
+          </p>
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
