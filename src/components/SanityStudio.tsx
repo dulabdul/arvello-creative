@@ -17,7 +17,7 @@ const config = defineConfig({
           .items([
             // --- 1. GLOBAL SETTINGS ---
             S.listItem()
-              .title('Site Settings')
+              .title('⚙️ Global Settings')
               .id('siteSettings')
               .child(
                 S.document()
@@ -27,72 +27,98 @@ const config = defineConfig({
 
             S.divider(),
 
-            // --- 2. LANDING PAGE SECTIONS (Singletons) ---
+            // --- 2. LANDING PAGE MANAGER (Grouped Folder) ---
             S.listItem()
-              .title('Hero Section')
-              .id('hero')
-              .child(S.document().schemaType('hero').documentId('hero')),
-            S.listItem()
-              .title('About Section')
-              .id('about')
-              .child(S.document().schemaType('about').documentId('about')),
-            S.listItem()
-              .title('How It Works Section')
-              .id('howItWorks')
+              .title('🖥️ Landing Page')
               .child(
-                S.document().schemaType('howItWorks').documentId('howItWorks'),
-              ),
-            S.listItem()
-              .title('What We Do Section')
-              .id('whatWeDo')
-              .child(
-                S.document().schemaType('whatWeDo').documentId('whatWeDo'),
-              ),
-            S.listItem()
-              .title('Portfolio Section')
-              .id('portfolioSection')
-              .child(
-                S.document()
-                  .schemaType('portfolioSection')
-                  .documentId('portfolioSection'),
-              ),
-            S.listItem()
-              .title('Pricing Section')
-              .id('pricingSection')
-              .child(
-                S.document()
-                  .schemaType('pricingSection')
-                  .documentId('pricingSection'),
-              ),
-            S.listItem()
-              .title('Template Section')
-              .id('templateSection')
-              .child(
-                S.document()
-                  .schemaType('templateSection')
-                  .documentId('templateSection'),
-              ),
-            S.listItem()
-              .title('FAQ Section')
-              .id('faqSection')
-              .child(
-                S.document().schemaType('faqSection').documentId('faqSection'),
-              ),
-            S.listItem()
-              .title('Contact Section')
-              .id('contactSection')
-              .child(
-                S.document()
-                  .schemaType('contactSection')
-                  .documentId('contactSection'),
+                S.list()
+                  .title('Landing Page Sections')
+                  .items([
+                    S.listItem()
+                      .title('Hero Section')
+                      .id('hero')
+                      .child(
+                        S.document().schemaType('hero').documentId('hero'),
+                      ),
+                    S.listItem()
+                      .title('About Section')
+                      .id('about')
+                      .child(
+                        S.document().schemaType('about').documentId('about'),
+                      ),
+                    S.listItem()
+                      .title('How It Works Section')
+                      .id('howItWorks')
+                      .child(
+                        S.document()
+                          .schemaType('howItWorks')
+                          .documentId('howItWorks'),
+                      ),
+                    S.listItem()
+                      .title('What We Do Section')
+                      .id('whatWeDo')
+                      .child(
+                        S.document()
+                          .schemaType('whatWeDo')
+                          .documentId('whatWeDo'),
+                      ),
+                    S.listItem()
+                      .title('Portfolio Section')
+                      .id('portfolioSection')
+                      .child(
+                        S.document()
+                          .schemaType('portfolioSection')
+                          .documentId('portfolioSection'),
+                      ),
+                    S.listItem()
+                      .title('Pricing Section')
+                      .id('pricingSection')
+                      .child(
+                        S.document()
+                          .schemaType('pricingSection')
+                          .documentId('pricingSection'),
+                      ),
+                    S.listItem()
+                      .title('Template Section')
+                      .id('templateSection')
+                      .child(
+                        S.document()
+                          .schemaType('templateSection')
+                          .documentId('templateSection'),
+                      ),
+                    S.listItem()
+                      .title('FAQ Section')
+                      .id('faqSection')
+                      .child(
+                        S.document()
+                          .schemaType('faqSection')
+                          .documentId('faqSection'),
+                      ),
+                    S.listItem()
+                      .title('Contact Section')
+                      .id('contactSection')
+                      .child(
+                        S.document()
+                          .schemaType('contactSection')
+                          .documentId('contactSection'),
+                      ),
+                  ]),
               ),
 
             S.divider(),
 
-            // --- 3. BLOG COLLECTIONS (Multiple Items) ---
-            S.documentTypeListItem('post').title('Blog Posts'),
-            S.documentTypeListItem('category').title('Blog Categories'),
-            S.documentTypeListItem('author').title('Blog Authors'),
+            // --- 3. BLOG MANAGER (Grouped Folder) ---
+            S.listItem()
+              .title('✍️ Blog Manager')
+              .child(
+                S.list()
+                  .title('Blog Content')
+                  .items([
+                    S.documentTypeListItem('post').title('📝 Blog Posts'),
+                    S.documentTypeListItem('category').title('📁 Categories'),
+                    S.documentTypeListItem('author').title('👤 Authors'),
+                  ]),
+              ),
 
             S.divider(),
 

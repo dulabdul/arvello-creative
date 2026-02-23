@@ -13,14 +13,12 @@ import localeText from './localeText';
 import portfolioSection from './portfolioSection';
 import post from './post';
 import pricingSection from './pricingSection';
-import service from './service';
 import siteSettings from './siteSettings';
 import templateSection from './templateSection';
 import whatWeDo from './whatWeDo';
 
 export const schemaTypes = [
   siteSettings,
-  service,
   hero,
   localeString,
   about,
