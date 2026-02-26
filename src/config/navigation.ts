@@ -11,13 +11,13 @@ export type NavItem = {
 // --- SINGLE SOURCE OF TRUTH ---
 export const navigationData: NavItem[] = [
   { name: { id: 'Beranda', en: 'Home' }, href: '#home' },
-  { name: { id: 'Layanan', en: 'Services' }, href: '#services' },
   { name: { id: 'Cara Kerja', en: 'How It Works' }, href: '#how-it-works' },
+  { name: { id: 'Layanan', en: 'Service' }, href: '#what-we-do' },
   { name: { id: 'Portofolio', en: 'Portfolio' }, href: '#portfolio' },
   { name: { id: 'Templates', en: 'Templates' }, href: '#template' },
-  { name: { id: 'Blog', en: 'Blog' }, href: '/blog' },
   { name: { id: 'FAQ', en: 'FAQ' }, href: '#faq' },
   { name: { id: 'Kontak', en: 'Contact' }, href: '#contact' },
+  { name: { id: 'Blog', en: 'Blog' }, href: '/blog' },
 ];
 
 // Helper function agar komponen React & Astro tinggal panggil 1 baris
