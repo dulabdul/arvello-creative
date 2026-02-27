@@ -12,13 +12,14 @@ import Pricing from '@/components/section/Pricing.astro';
 import Template from '@/components/section/Template.astro';
 import FAQ from '@/components/section/FAQ.astro';
 import Contact from '@/components/section/Contact.astro';
+import Templates from './templates.astro';
 
 let heroData = null;
 let aboutData = null;
 // Variabel baru untuk data HowItWorks
 let howItWorksData = null;
 let whatWeDoData = null;
-
+const isDevMode = import.meta.env.DEV;
 try {
   // Tambahkan query baru ke Promise.all agar tetap efisien
   [heroData, aboutData, howItWorksData, whatWeDoData] = await Promise.all([
@@ -62,7 +63,7 @@ try {
   />
   <Portfolio lang='id' />
   <Pricing lang='id' />
-  <Template lang='id' />
+  {isDevMode && <Templates />}
   <FAQ lang='id' />
   <Contact lang='id' />
 </BaseLayout>

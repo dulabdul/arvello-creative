@@ -11,11 +11,12 @@ import Pricing from '@/components/section/Pricing.astro';
 import Template from '@/components/section/Template.astro';
 import FAQ from '@/components/section/FAQ.astro';
 import Contact from '@/components/section/Contact.astro';
+import Templates from '../templates.astro';
 let heroData = null;
 let aboutData = null;
 let howItWorksData = null;
 let whatWeDoData = null;
-
+const isDevMode = import.meta.env.DEV;
 try {
   [heroData, aboutData, howItWorksData, whatWeDoData] = await Promise.all([
     sanityClient.fetch(`*[_type == "hero"][0]`),
@@ -56,7 +57,7 @@ try {
   />
   <Portfolio lang='en' />
   <Pricing lang='en' />
-  <Template lang='en' />
+  {isDevMode && <Templates />}
   <FAQ lang='en' />
   <Contact lang='en' />
 </BaseLayout>
