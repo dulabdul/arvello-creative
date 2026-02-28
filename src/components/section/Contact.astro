@@ -66,6 +66,7 @@ const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMsg)}`;
     <div class='grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8'>
       {/* --- KARTU WHATSAPP --- */}
       <a
+        onclick="window.dataLayer = window.dataLayer || []; window.dataLayer.push({ 'event': 'click_cta_whatsapp', 'button_whatsapp_cta': 'contact_cta_whatsapp' });"
         href={waLink}
         target='_blank'
         rel='noopener noreferrer'
@@ -93,6 +94,7 @@ const waLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(waMsg)}`;
 
       {/* --- KARTU EMAIL --- */}
       <a
+        onclick="window.dataLayer = window.dataLayer || []; window.dataLayer.push({ 'event': 'click_cta_email', 'button_email_cta': 'contact_cta_email' });"
         href={emailLink}
         class='group block'>
         <div
