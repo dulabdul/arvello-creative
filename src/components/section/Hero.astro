@@ -40,9 +40,8 @@ const {
       class='text-5xl md:text-7xl lg:text-[5.5rem] font-extrabold tracking-tight text-slate-900 leading-[1.1] mb-10 text-balance'
       set:html={headline}
     />
-
-    {/* Menggunakan buttonVariants agar struktur HTML valid dan aksesibel */}
     <a
+      onclick="window.dataLayer = window.dataLayer || []; window.dataLayer.push({ 'event': 'click_cta', 'Button_Hero_CTA': 'Hero_GetInTouch' });"
       href={ctaLink}
       class={buttonVariants({
         className:
