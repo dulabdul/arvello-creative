@@ -183,7 +183,13 @@ const pageDesc =
                       {title}
                     </a>
                   </h3>
-
+                  <p class='text-sm font-light mb-2 text-slate-900'>
+                    {new Date(post.publishedAt).toLocaleDateString('id-ID', {
+                      day: 'numeric',
+                      month: 'long',
+                      year: 'numeric',
+                    })}
+                  </p>
                   {/* Read More Link */}
                   <div class='mt-auto flex items-center justify-between'>
                     <a
