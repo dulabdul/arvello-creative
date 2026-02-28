@@ -131,7 +131,16 @@ export default function PricingCarousel({
                       href={pkg.waLink}
                       target='_blank'
                       rel='noopener noreferrer'
-                      className='w-full md:w-auto'>
+                      className='w-full md:w-auto'
+                      // PERUBAHAN DI SINI: Gunakan Arrow Function dan type casting
+                      onClick={() => {
+                        const w = window as any;
+                        w.dataLayer = w.dataLayer || [];
+                        w.dataLayer.push({
+                          event: 'click_pricing',
+                          package_name: pkg.name, // atau pkg.title (sesuaikan dengan properti Anda)
+                        });
+                      }}>
                       <Button className={buttonClasses}>
                         {lang === 'id' ? 'Pilih Paket' : 'Choose Plan'}
                         <ArrowRight className='w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform' />

@@ -15,6 +15,7 @@ export const navigationData: NavItem[] = [
   { name: { id: 'Cara Kerja', en: 'How It Works' }, href: '#how-it-works' },
   { name: { id: 'Layanan', en: 'Service' }, href: '#what-we-do' },
   { name: { id: 'Projects', en: 'Projects' }, href: '#portfolio' },
+  { name: { id: 'Pricing', en: 'Pricing' }, href: '#pricing' },
   //   { name: { id: 'Templates', en: 'Templates' }, href: '#template' },
   { name: { id: 'FAQ', en: 'FAQ' }, href: '#faq' },
   { name: { id: 'Kontak', en: 'Contact' }, href: '#contact' },
