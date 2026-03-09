@@ -13,8 +13,10 @@ import { Button } from './button';
 export interface PricingPackage {
   _key: string;
   name: string;
+  category: string; // Tambahan properti baru
   description: string;
   price: string;
+  originalPrice?: string; // Harga coret opsional
   billingCycle: string;
   features: string[];
   waLink: string;
@@ -30,6 +32,37 @@ export default function PricingCarousel({
   packages,
   lang,
 }: PricingCarouselProps) {
+  const [activeCategory, setActiveCategory] = React.useState<string | null>(
+    packages.length > 0 ? packages[0].category : null,
+  );
+
+  // Dapatkan daftar kategori unik
+  const categories = React.useMemo(() => {
+    const defaultCategory = lang === 'id' ? 'Lainnya' : 'General';
+    const allCategories = packages.map(
+      (pkg) => pkg.category || defaultCategory,
+    );
+    return Array.from(new Set(allCategories));
+  }, [packages, lang]);
+
+  // Pastikan activeCategory valid jika data berubah
+  React.useEffect(() => {
+    if (
+      categories.length > 0 &&
+      (!activeCategory || !categories.includes(activeCategory))
+    ) {
+      setActiveCategory(categories[0]);
+    }
+  }, [categories, activeCategory]);
+
+  // Filter packages berdasarkan activeCategory
+  const filteredPackages = React.useMemo(() => {
+    const defaultCategory = lang === 'id' ? 'Lainnya' : 'General';
+    return packages.filter(
+      (pkg) => (pkg.category || defaultCategory) === activeCategory,
+    );
+  }, [packages, activeCategory, lang]);
+
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: false,
     align: 'start',
@@ -45,11 +78,35 @@ export default function PricingCarousel({
     [emblaApi],
   );
 
+  // Reset scroll pos ke awal saat kategori berubah
+  React.useEffect(() => {
+    if (emblaApi) {
+      emblaApi.scrollTo(0);
+    }
+  }, [activeCategory, emblaApi]);
+
   if (!packages || packages.length === 0) return null;
 
   return (
     <div className='relative w-full pt-4'>
-      {' '}
+      {/* Category Tabs */}
+      {categories.length > 1 && (
+        <div className='flex flex-wrap gap-2 mb-8 pr-4'>
+          {categories.map((category) => (
+            <button
+              key={category}
+              onClick={() => setActiveCategory(category)}
+              className={`px-5 py-2.5 rounded-full text-sm font-bold transition-all duration-300 shadow-sm ${
+                activeCategory === category
+                  ? 'bg-blue-600 text-white shadow-blue-500/30'
+                  : 'bg-white text-slate-600 border border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+              }`}>
+              {category}
+            </button>
+          ))}
+        </div>
+      )}
+
       {/* pt-4 agar badge yang melayang tidak terpotong */}
       <div className='hidden md:flex justify-end gap-2 mb-4 pr-4'>
         <Button
@@ -73,7 +130,7 @@ export default function PricingCarousel({
         <div className='flex touch-pan-y -ml-4 pb-8'>
           {' '}
           {/* pb-8 untuk spasi shadow di bawah */}
-          {packages.map((pkg) => {
+          {filteredPackages.map((pkg) => {
             // Logika Styling Dinamis
             const cardClasses = pkg.isPopular
               ? 'bg-white rounded-[2rem] p-8 md:p-10 shadow-[0_12px_40px_rgba(37,99,235,0.15)] border-2 border-blue-500 h-full flex flex-col relative transform scale-[1.02]'
@@ -121,10 +178,22 @@ export default function PricingCarousel({
 
                   <div
                     className={`mt-auto rounded-3xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 border ${pkg.isPopular ? 'bg-blue-50/50 border-blue-100' : 'bg-slate-50 border-slate-100'}`}>
-                    <div className='flex items-baseline gap-2'>
-                      <span className='text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight'>
-                        {pkg.price}
-                      </span>
+                    <div className='flex flex-col gap-1'>
+                      {pkg.originalPrice && (
+                        <span className='text-lg font-medium text-slate-400 line-through'>
+                          {pkg.originalPrice}
+                        </span>
+                      )}
+                      <div className='flex items-baseline gap-2'>
+                        <span className='text-3xl md:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight'>
+                          {pkg.price}
+                        </span>
+                        {pkg.billingCycle && (
+                          <span className='text-slate-500 font-medium'>
+                            {pkg.billingCycle}
+                          </span>
+                        )}
+                      </div>
                     </div>
 
                     <a

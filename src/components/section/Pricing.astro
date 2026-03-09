@@ -40,6 +40,8 @@ const rawPackages = sectionData?.pricingPackages || [];
 
 const processedPackages: PricingPackage[] = rawPackages.map((pkg: any) => {
   const price = lang === 'id' ? pkg.priceIdr || 'Rp 0' : pkg.priceUsd || '$0';
+  const originalPrice =
+    lang === 'id' ? pkg.originalPriceIdr : pkg.originalPriceUsd;
   const pkgWaMsg =
     pkg.packageWhatsappMessage?.[lang] ||
     `Halo, saya tertarik dengan paket ${pkg.packageName?.[lang] || 'ini'}.`;
@@ -52,8 +54,10 @@ const processedPackages: PricingPackage[] = rawPackages.map((pkg: any) => {
   return {
     _key: pkg._key,
     name: pkg.packageName?.[lang] || 'Plan',
+    category: pkg.category?.[lang] || (lang === 'id' ? 'Lainnya' : 'General'),
     description: pkg.packageDescription?.[lang] || '',
     price: price,
+    originalPrice: originalPrice,
     billingCycle: pkg.billingCycle?.[lang] || '',
     features: features,
     waLink: waLink,

@@ -59,6 +59,12 @@ export default defineType({
               title: 'Package Name',
               type: 'localeString',
             },
+            {
+              name: 'category',
+              title: 'Category',
+              type: 'localeString',
+              description: 'Kategori paket (contoh: "Landing Page", "Corporate Profile")',
+            },
             // --- TAMBAHAN: BOOLEAN UNTUK POPULAR CARD ---
             {
               name: 'isPopular',
@@ -75,15 +81,27 @@ export default defineType({
             },
             {
               name: 'priceIdr',
-              title: 'Price (IDR)',
+              title: 'Current Price (IDR)',
               type: 'string',
-              description: 'Contoh: Rp 5.000.000',
+              description: 'Harga saat ini. Contoh: Rp 5.000.000',
+            },
+            {
+              name: 'originalPriceIdr',
+              title: 'Original Price (IDR)',
+              type: 'string',
+              description: 'Opsional. Harga asli sebelum diskon untuk efek coret. Contoh: Rp 7.500.000',
             },
             {
               name: 'priceUsd',
-              title: 'Price (USD)',
+              title: 'Current Price (USD)',
               type: 'string',
-              description: 'Contoh: $3,250',
+              description: 'Harga saat ini. Contoh: $3,250',
+            },
+            {
+              name: 'originalPriceUsd',
+              title: 'Original Price (USD)',
+              type: 'string',
+              description: 'Opsional. Harga asli sebelum diskon untuk efek coret. Contoh: $4,500',
             },
             {
               name: 'billingCycle',

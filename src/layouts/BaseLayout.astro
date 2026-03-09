@@ -4,6 +4,7 @@ import '../styles/global.css';
 import { sanityClient, urlFor } from '../lib/sanity';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/section/Footer.astro';
+import FloatingWhatsApp from '@/components/ui/FloatingWhatsApp.astro';
 
 export interface Props {
   title?: string;
@@ -142,5 +143,6 @@ const gtmId = siteSettings.gtmId;
     </main>
     
     <Footer lang={lang} />
+    <FloatingWhatsApp lang={lang} />
   </body>
 </html>
