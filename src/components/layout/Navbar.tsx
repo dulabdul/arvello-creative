@@ -22,10 +22,35 @@ export default function Navbar({
   // Bersihkan slash ganda jika ada
   const safePath = currentPath.replace(/\/+/g, '/');
 
-  // Cek HANYA untuk halaman DETAIL blog
   const isBlogDetailRoute =
     (safePath.startsWith('/blog/') && safePath.length > '/blog/'.length) ||
     (safePath.startsWith('/en/blog/') && safePath.length > '/en/blog/'.length);
+
+  // Periksa apakah user ada di homepage (root atau /en)
+  const isHomePage =
+    safePath === '/' || safePath === '/en' || safePath === '/en/';
+
+  // Helper untuk membuat href dinamis berdasarkan posisi halaman
+  const resolveHref = (href: string) => {
+    // Jika link adalah hash link (misal: #contact)
+    if (href.startsWith('#')) {
+      if (isHomePage) {
+        // Jika sedang di homepage, biarkan saja agar smooth scroll browser berfungsi
+        return href;
+      } else {
+        // Jika di sub-page (misal: /blog), arahkan ke homepage lalu ke hash tersebut
+        return currentLang === 'id' ? `/${href}` : `/en/${href}`;
+      }
+    } else if (href.startsWith('/')) {
+      // Jika link adalah internal path murni (misal: /blog)
+      if (currentLang === 'en' && !href.startsWith('/en')) {
+        return `/en${href}`;
+      }
+      return href;
+    }
+    // Jika link eksternal (https://...)
+    return href;
+  };
 
   // Logika Switch Bahasa Dinamis
   let toggleLangPath = '/';
@@ -58,7 +83,7 @@ export default function Navbar({
           {navLinks.map((link) => (
             <a
               key={link.name}
-              href={link.href}
+              href={resolveHref(link.href)}
               className='text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors'>
               {link.name}
             </a>
@@ -116,7 +141,7 @@ export default function Navbar({
                 {navLinks.map((link) => (
                   <a
                     key={link.name}
-                    href={link.href}
+                    href={resolveHref(link.href)}
                     onClick={() => setIsOpen(false)}
                     className='flex items-center justify-between py-3 px-2 text-lg font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all'>
                     {link.name}
