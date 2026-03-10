@@ -13,5 +13,16 @@ export default defineType({
       options: { hotspot: true },
     }),
     defineField({ name: 'bio', title: 'Bio', type: 'localeText' }),
+    defineField({
+      name: 'social',
+      title: 'Social Media',
+      type: 'object',
+      fields: [
+        defineField({ name: 'instagram', title: 'Instagram URL', type: 'url' }),
+        defineField({ name: 'linkedin', title: 'LinkedIn URL', type: 'url' }),
+        defineField({ name: 'x', title: 'X (Twitter) URL', type: 'url' }),
+        defineField({ name: 'website', title: 'Personal Website URL', type: 'url' }),
+      ],
+    }),
   ],
 });
