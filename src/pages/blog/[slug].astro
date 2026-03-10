@@ -77,13 +77,13 @@ const toc = generateToC(contentBlocks);
             <div class='absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent' />
 
             <div class='absolute bottom-0 left-0 w-full p-8 md:p-12 lg:p-16'>
-              <h1 class='text-3xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight max-w-4xl capitalize'>
+              <h1 class='text-2xl md:text-4xl lg:text-5xl font-extrabold text-white leading-tight max-w-4xl capitalize'>
                 {title}
               </h1>
             </div>
           </div>
         ) : (
-          <h1 class='text-4xl md:text-6xl font-extrabold text-slate-900 leading-tight mb-12 capitalize text-center'>
+          <h1 class='text-3xl md:text-5xl font-extrabold text-slate-900 leading-tight mb-12 capitalize text-center'>
             {title}
           </h1>
         )
@@ -93,9 +93,9 @@ const toc = generateToC(contentBlocks);
       <div
         class='grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start relative'>
         {/* KOLOM KIRI: MAIN ARTICLE CONTENT */}
-        <div class='lg:col-span-8 w-full'>
+        <div class='order-2 lg:order-1 lg:col-span-8 w-full'>
           <div
-            class='prose prose-lg prose-slate prose-headings:font-bold prose-headings:text-slate-900 prose-a:text-blue-600 hover:prose-a:text-blue-500 prose-img:rounded-[2rem] prose-img:border prose-img:border-slate-100 prose-img:shadow-md max-w-none'
+            class='prose prose-lg prose-slate prose-headings:font-bold prose-headings:text-slate-900 prose-h2:text-2xl md:prose-h2:text-3xl prose-h3:text-xl md:prose-h3:text-2xl prose-a:text-blue-600 hover:prose-a:text-blue-500 prose-img:rounded-[2rem] prose-img:border prose-img:border-slate-100 prose-img:shadow-md max-w-none'
             id='article-content'>
             {
               contentBlocks.length > 0 ? (
@@ -108,7 +108,8 @@ const toc = generateToC(contentBlocks);
         </div>
 
         {/* KOLOM KANAN: STICKY SIDEBAR */}
-        <aside class='lg:col-span-4 sticky top-32 flex flex-col gap-6 w-full'>
+        <aside
+          class='order-1 lg:order-2 lg:col-span-4 static lg:sticky lg:top-32 flex flex-col gap-6 w-full'>
           {/* Box 1: Blog Meta Data */}
           <div
             class='bg-white rounded-[2rem] p-8 border border-slate-100 shadow-[0_8px_30px_rgb(0,0,0,0.04)]'>
