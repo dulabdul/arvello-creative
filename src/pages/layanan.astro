@@ -1,0 +1,71 @@
+---
+// src/pages/layanan.astro  ← Indonesian localized URL for the Services page
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServicesHero from '@/components/section/ServicesHero.astro';
+import About from '@/components/section/About.astro';
+import ServicesWhatWeDo from '@/components/section/ServicesWhatWeDo.astro';
+import Pricing from '@/components/section/Pricing.astro';
+import FAQ from '@/components/section/FAQ.astro';
+import Contact from '@/components/section/Contact.astro';
+import { sanityClient } from '@/lib/sanity';
+
+const lang = 'id';
+
+let aboutData = null;
+let whatWeDoData = null;
+
+try {
+  [aboutData, whatWeDoData] = await Promise.all([
+    sanityClient.fetch(`*[_type == "about"][0]`),
+    sanityClient.fetch(`*[_type == "whatWeDo"][0]`),
+  ]);
+} catch (error) {
+  console.error('Sanity Fetch Error (layanan.astro):', error);
+}
+---
+
+<BaseLayout
+  lang={lang}
+  title='Layanan Kami'
+  description='Kami menyediakan solusi digital terbaik — website landing page, corporate profile, dan e-commerce yang dibangun dengan teknologi modern dan strategi SEO yang terbukti.'>
+
+  {/* Hreflang: ID = /layanan, EN = /en/services */}
+  <link slot='head' rel='alternate' hreflang='id' href='https://arvellocreative.com/layanan' />
+  <link slot='head' rel='alternate' hreflang='en' href='https://arvellocreative.com/en/services' />
+
+  {/* JSON-LD BreadcrumbList */}
+  <script
+    type='application/ld+json'
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://arvellocreative.com/' },
+        { '@type': 'ListItem', position: 2, name: 'Layanan', item: 'https://arvellocreative.com/layanan' },
+      ],
+    })}
+  />
+
+  <ServicesHero lang={lang} />
+
+  <About
+    lang={lang}
+    headline={aboutData?.headline}
+    description={aboutData?.description}
+    statistics={aboutData?.statistics}
+  />
+
+  <ServicesWhatWeDo
+    lang={lang}
+    headline={whatWeDoData?.headline}
+    description={whatWeDoData?.description}
+    gridItems={whatWeDoData?.gridItems}
+  />
+
+  <Pricing lang={lang} />
+
+  <FAQ lang={lang} />
+
+  <Contact lang={lang} />
+</BaseLayout>

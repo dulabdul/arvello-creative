@@ -1,0 +1,120 @@
+---
+// src/components/section/SiloContent.astro
+import FaqAccordion, { type FaqItem } from '../ui/FAQAccordion';
+import { CheckCircle2 } from 'lucide-react';
+
+interface Props {
+  lang: 'id' | 'en';
+  data?: {
+    title?: string;
+    intro?: string;
+    secondaryTitle?: string;
+    secondaryContent?: string;
+    benefitsTitle?: string;
+    benefits?: string[];
+    faqTitle?: string;
+    faqs?: { q: string; a: string }[];
+    footerTitle?: string;
+    footerContent?: string;
+  };
+}
+
+const { lang, data } = Astro.props;
+
+if (!data) return null;
+
+const processedFaqs: FaqItem[] = (data.faqs || []).map((faq, index) => ({
+  _key: `silo-faq-${index}`,
+  question: faq.q,
+  answer: faq.a,
+}));
+---
+
+<section class="py-20 md:py-32 bg-white">
+  <div class="container mx-auto px-4 max-w-7xl">
+    <div class="max-w-4xl mx-auto">
+      
+      {/* --- Main Content Section --- */}
+      <div class="prose prose-slate prose-lg max-w-none">
+        {data.title && (
+          <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 mb-8 tracking-tight">
+            {data.title}
+          </h2>
+        )}
+        
+        {data.intro && (
+          <div class="text-slate-600 leading-relaxed space-y-6 mb-12 whitespace-pre-line">
+            {data.intro}
+          </div>
+        )}
+
+        {data.secondaryTitle && (
+          <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-6 tracking-tight">
+            {data.secondaryTitle}
+          </h3>
+        )}
+
+        {data.secondaryContent && (
+          <div class="text-slate-600 leading-relaxed mb-16 whitespace-pre-line">
+            {data.secondaryContent}
+          </div>
+        )}
+      </div>
+
+      {/* --- Benefits Grid --- */}
+      {data.benefits && data.benefits.length > 0 && (
+        <div class="mb-20">
+          <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-8 tracking-tight">
+            {data.benefitsTitle || (lang === 'id' ? 'Keunggulan Kami' : 'Our Advantages')}
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {data.benefits.map((benefit) => (
+              <div class="flex items-start gap-3 p-5 bg-slate-50 border border-slate-100 rounded-2xl transition-all hover:border-blue-200 group">
+                <CheckCircle2 class="w-6 h-6 text-blue-500 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                <span class="text-slate-700 font-medium leading-snug">{benefit}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* --- Internal FAQ --- */}
+      {processedFaqs.length > 0 && (
+        <div class="mb-20">
+          <h3 class="text-2xl md:text-3xl font-bold text-slate-900 mb-8 tracking-tight">
+            {data.faqTitle || 'FAQ'}
+          </h3>
+          <FaqAccordion client:visible faqs={processedFaqs} />
+        </div>
+      )}
+
+      {/* --- Concluding Section --- */}
+      {(data.footerTitle || data.footerContent) && (
+        <div class="p-8 md:p-12 bg-slate-900 rounded-[2.5rem] text-white relative overflow-hidden">
+          {/* Decorative Accent */}
+          <div class="absolute top-0 right-0 w-32 h-32 bg-blue-600/20 blur-[80px]"></div>
+          
+          <div class="relative z-10">
+            {data.footerTitle && (
+              <h3 class="text-2xl md:text-3xl font-bold mb-6 text-blue-400">
+                {data.footerTitle}
+              </h3>
+            )}
+            {data.footerContent && (
+              <p class="text-slate-300 text-lg leading-relaxed whitespace-pre-line">
+                {data.footerContent}
+              </p>
+            )}
+            
+            <div class="mt-10 flex flex-wrap gap-4">
+               <a href="#contact" class="inline-flex items-center justify-center px-8 py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shaodw-blue-900/20">
+                 {lang === 'id' ? 'Konsultasi Sekarang' : 'Consult Now'}
+               </a>
+            </div>
+          </div>
+        </div>
+      )}
+
+    </div>
+  </div>
+</section>

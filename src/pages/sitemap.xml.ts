@@ -18,6 +18,8 @@ export const GET: APIRoute = async ({ request }) => {
     '/en', // Halaman Utama EN
     '/blog', // Feed Blog ID
     '/en/blog', // Feed Blog EN
+    '/layanan', // Services ID (localized)
+    '/en/services', // Services EN
     '/refund-policy', // Legal ID
     '/en/refund-policy', // Legal EN
   ];
@@ -35,7 +37,33 @@ export const GET: APIRoute = async ({ request }) => {
     )
     .join('');
 
-  // 4. Generate Format XML untuk Blog Posts Dinamis (ID & EN)
+  // 4. Generate Format XML untuk Service Categories (Dedicated Pages)
+  const pricingCategories: string[] = await sanityClient.fetch(
+    `*[_type == "pricingSection"][0].pricingPackages[].category.id`
+  );
+  const uniqueCategories = [...new Set(pricingCategories.filter(Boolean))];
+  const toSlug = (s: string) =>
+    s.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+  const categoryUrls = uniqueCategories
+    .map((cat) => {
+      const slug = toSlug(cat);
+      return `
+    <url>
+      <loc>${siteUrl}/layanan/${slug}</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+    <url>
+      <loc>${siteUrl}/en/services/${slug}</loc>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+  `;
+    })
+    .join('');
+
+  // 5. Generate Format XML untuk Blog Posts Dinamis (ID & EN)
   const dynamicUrls = posts
     .map((post: any) => {
       let urls = '';

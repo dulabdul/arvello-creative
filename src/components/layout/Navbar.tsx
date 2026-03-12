@@ -9,14 +9,17 @@ interface NavbarProps {
   brandName?: string;
   currentLang: 'id' | 'en';
   currentPath?: string;
+  serviceCategories?: { name: string; slug: string }[];
 }
 
 export default function Navbar({
   brandName = 'FasterUI',
   currentLang,
   currentPath = '/',
+  serviceCategories = [],
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const [isServicesOpen, setIsServicesOpen] = useState(false);
   const navLinks = getNavLinks(currentLang);
 
   // Bersihkan slash ganda jika ada
@@ -52,12 +55,36 @@ export default function Navbar({
     return href;
   };
 
+  // ─── Localized path alias map ─────────────────────────────────────────────
+  // Maps localized paths to their language counterparts.
+  // ADD NEW LOCALIZED ROUTES HERE — single source of truth.
+  const pathAliasMap: Record<string, string> = {
+    '/layanan':      '/en/services', // ID → EN
+    '/en/services':  '/layanan',     // EN → ID
+  };
+
+  // Dynamic: /layanan/[slug] ↔ /en/services/[slug]
+  const layananSubMatch = safePath.match(/^\/layanan\/(.+)$/);
+  const enServicesSubMatch = safePath.match(/^\/en\/services\/(.+)$/);
+
   // Logika Switch Bahasa Dinamis
   let toggleLangPath = '/';
   if (currentLang === 'id') {
-    toggleLangPath = safePath === '/' ? '/en/' : `/en${safePath}`;
+    if (layananSubMatch) {
+      toggleLangPath = `/en/services/${layananSubMatch[1]}`;
+    } else {
+      toggleLangPath =
+        pathAliasMap[safePath] ??
+        (safePath === '/' ? '/en/' : `/en${safePath}`);
+    }
   } else {
-    toggleLangPath = safePath.replace(/^\/en(\/|$)/, '/') || '/';
+    if (enServicesSubMatch) {
+      toggleLangPath = `/layanan/${enServicesSubMatch[1]}`;
+    } else {
+      toggleLangPath =
+        pathAliasMap[safePath] ??
+        (safePath.replace(/^\/en(\/|$)/, '/') || '/');
+    }
   }
 
   const toggleLangText = currentLang === 'id' ? 'EN' : 'ID';
@@ -80,14 +107,49 @@ export default function Navbar({
 
         {/* --- TENGAH: GLASSMORPHISM PILL (DESKTOP) --- */}
         <nav className='hidden md:flex items-center gap-8 bg-white/40 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_0_rgba(31,38,135,0.07)] rounded-full px-8 py-3'>
-          {navLinks.map((link) => (
-            <a
-              key={link.name}
-              href={resolveHref(link.href)}
-              className='text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors'>
-              {link.name}
-            </a>
-          ))}
+          {navLinks.map((link) => {
+            const isServices = link.href === '/layanan' || link.href === '/en/services';
+            if (isServices && serviceCategories.length > 0) {
+              return (
+                <div
+                  key={link.name}
+                  className='relative'
+                  onMouseEnter={() => setIsServicesOpen(true)}
+                  onMouseLeave={() => setIsServicesOpen(false)}>
+                  <a
+                    href={resolveHref(link.href)}
+                    className='flex items-center gap-1 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors'>
+                    {link.name}
+                    <svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='currentColor' strokeWidth='2.5' strokeLinecap='round' strokeLinejoin='round' className={`transition-transform duration-200 ${isServicesOpen ? 'rotate-180' : ''}`}><path d='m6 9 6 6 6-6'/></svg>
+                  </a>
+                  {/* Dropdown */}
+                  {isServicesOpen && (
+                    <div className='absolute top-full left-1/2 -translate-x-1/2 pt-3 z-50'>
+                      <div className='bg-white/95 backdrop-blur-xl border border-slate-100 shadow-xl rounded-2xl py-2 min-w-[180px]'>
+                        {serviceCategories.map((cat) => (
+                          <a
+                            key={cat.slug}
+                            href={currentLang === 'id' ? `/layanan/${cat.slug}` : `/en/services/${cat.slug}`}
+                            className='flex items-center gap-2 px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-blue-600 hover:bg-blue-50/60 transition-all'>
+                            <span className='w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0' />
+                            {cat.name}
+                          </a>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            }
+            return (
+              <a
+                key={link.name}
+                href={resolveHref(link.href)}
+                className='text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors'>
+                {link.name}
+              </a>
+            );
+          })}
         </nav>
 
         {/* --- KANAN: LANGUAGE SWITCHER (DESKTOP) --- */}
@@ -138,16 +200,35 @@ export default function Navbar({
 
               {/* Menu List untuk Mobile */}
               <nav className='flex flex-col gap-2 flex-grow overflow-y-auto'>
-                {navLinks.map((link) => (
-                  <a
-                    key={link.name}
-                    href={resolveHref(link.href)}
-                    onClick={() => setIsOpen(false)}
-                    className='flex items-center justify-between py-3 px-2 text-lg font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all'>
-                    {link.name}
-                    <ChevronRight className='w-5 h-5 text-slate-300' />
-                  </a>
-                ))}
+                {navLinks.map((link) => {
+                  const isServices = link.href === '/layanan' || link.href === '/en/services';
+                  return (
+                    <div key={link.name}>
+                      <a
+                        href={resolveHref(link.href)}
+                        onClick={() => setIsOpen(false)}
+                        className='flex items-center justify-between py-3 px-2 text-lg font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-50 rounded-xl transition-all'>
+                        {link.name}
+                        <ChevronRight className='w-5 h-5 text-slate-300' />
+                      </a>
+                      {/* Sub-items for Services on mobile */}
+                      {isServices && serviceCategories.length > 0 && (
+                        <div className='flex flex-col gap-0.5 ml-4 mb-2'>
+                          {serviceCategories.map((cat) => (
+                            <a
+                              key={cat.slug}
+                              href={currentLang === 'id' ? `/layanan/${cat.slug}` : `/en/services/${cat.slug}`}
+                              onClick={() => setIsOpen(false)}
+                              className='flex items-center gap-2 py-2 px-3 text-sm font-medium text-slate-500 hover:text-blue-600 hover:bg-blue-50/60 rounded-lg transition-all'>
+                              <span className='w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0' />
+                              {cat.name}
+                            </a>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </nav>
 
               {/* Language Switcher Mobile (Revamped UI) */}

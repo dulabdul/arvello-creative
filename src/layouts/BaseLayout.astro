@@ -22,6 +22,21 @@ const currentPath = Astro.url.pathname;
 const query = `*[_type == "siteSettings"][0]`;
 const siteSettings = (await sanityClient.fetch(query)) || {};
 
+// Fetch pricing categories for Navbar dropdown — deduplicated with slugs
+const toSlug = (s: string) =>
+  s.toLowerCase().trim().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+
+let serviceCategories: { name: string; slug: string }[] = [];
+try {
+  const pricingData: string[] = await sanityClient.fetch(
+    `*[_type == "pricingSection"][0].pricingPackages[].category.id`
+  );
+  if (Array.isArray(pricingData)) {
+    const unique = [...new Set(pricingData.filter(Boolean))];
+    serviceCategories = unique.map((name) => ({ name, slug: toSlug(name) }));
+  }
+} catch (_) {}
+
 // --- RESOLUSI TEKS SEO ---
 const finalBrandName = propBrandName || siteSettings.brandName || 'Agency Profile';
 const baseSeoTitle = siteSettings.title || finalBrandName;
@@ -135,7 +150,8 @@ const gtmId = siteSettings.gtmId;
       client:load 
       brandName={finalBrandName} 
       currentLang={lang} 
-      currentPath={currentPath} 
+      currentPath={currentPath}
+      serviceCategories={serviceCategories}
     />
     
     <main class="w-full flex-col">

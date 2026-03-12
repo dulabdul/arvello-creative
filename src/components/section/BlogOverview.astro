@@ -1,0 +1,150 @@
+---
+// src/components/section/BlogOverview.astro
+import { sanityClient, urlFor } from '@/lib/sanity';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
+import { Image } from 'astro:assets';
+
+interface Props {
+  lang: 'id' | 'en';
+  categorySlug?: string;
+  limit?: number;
+}
+
+const { lang, categorySlug, limit = 3 } = Astro.props;
+
+// --- GROQ Query ---
+// Memfilter berdasarkan slug kategori jika disediakan, jika tidak ambil terbaru.
+const query = `
+  *[_type == "post" && (!defined($categorySlug) || count(categories[]->slug.current[@ == $categorySlug]) > 0)] 
+  | order(publishedAt desc)[0...$limit] {
+    "title": title[$lang],
+    "slug": slug[$lang].current,
+    mainImage,
+    "excerpt": excerpt[$lang],
+    publishedAt,
+    "author": author->name,
+    "categories": categories[]->{
+       "title": title[$lang],
+       "slug": slug.current
+    }
+  }
+`;
+
+let posts = [];
+try {
+  posts = await sanityClient.fetch(query, { lang, categorySlug: categorySlug || null, limit });
+} catch (error) {
+  console.error('BlogOverview Fetch Error:', error);
+}
+
+const translations = {
+  id: {
+    eyebrow: 'Wawasan Terbaru',
+    headline: 'Artikel & Tips Bisnis',
+    description: 'Temukan informasi terbaru seputar dunia digital, strategi bisnis, dan tren teknologi terkini dari tim ahli kami.',
+    seeMore: 'Lihat Semua Artikel',
+    by: 'Oleh'
+  },
+  en: {
+    eyebrow: 'Latest Insights',
+    headline: 'Articles & Business Tips',
+    description: 'Find the latest information about the digital world, business strategy, and technology trends from our expert team.',
+    seeMore: 'View All Articles',
+    by: 'By'
+  }
+};
+
+const t = translations[lang];
+
+function formatDate(dateStr: string) {
+  const date = new Date(dateStr);
+  const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: 'short' };
+  return date.toLocaleDateString(lang === 'id' ? 'id-ID' : 'en-US', options);
+}
+---
+
+<section class="py-20 md:py-32 bg-white overflow-hidden">
+  <div class="container mx-auto px-4 max-w-7xl">
+    
+    {/* --- HEADER --- */}
+    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-16">
+      <div class="max-w-2xl">
+        <p class="text-sm font-bold text-blue-600 uppercase tracking-[0.2em] mb-4">
+          {t.eyebrow}
+        </p>
+        <h2 class="text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+          {t.headline}
+        </h2>
+        <p class="mt-4 text-lg text-slate-500">
+          {t.description}
+        </p>
+      </div>
+      
+      <a href={lang === 'id' ? '/blog' : '/en/blog'} class="hidden md:inline-flex group items-center gap-2 text-sm font-bold text-slate-900 group">
+        {t.seeMore}
+        <ArrowRight class="w-4 h-4 transition-transform group-hover:translate-x-1" />
+      </a>
+    </div>
+
+    {/* --- GRID --- */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {posts.map((post) => (
+        <a 
+          href={lang === 'id' ? `/blog/${post.slug}` : `/en/blog/${post.slug}`}
+          class="group flex flex-col h-full bg-white transition-all duration-300"
+        >
+          {/* Image Wrapper */}
+          <div class="relative aspect-16/10 overflow-hidden rounded-[1.5rem] bg-slate-100 mb-6">
+            <img 
+              src={urlFor(post.mainImage).width(800).height(500).url()} 
+              alt={post.title}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+            />
+          </div>
+
+          {/* Meta */}
+          <div class="flex flex-wrap items-center gap-2 text-[11px] font-bold text-slate-900 uppercase tracking-widest mb-4">
+            <span>{formatDate(post.publishedAt)}</span>
+            {post.categories?.map((cat) => (
+              <>
+                <span class="w-1 h-1 rounded-full bg-slate-300 mx-1"></span>
+                <span class="text-blue-600">{cat.title}</span>
+              </>
+            ))}
+          </div>
+
+          {/* Title */}
+          <h3 class="text-2xl font-bold text-slate-900 leading-snug mb-4 group-hover:text-blue-600 transition-colors">
+            {post.title}
+          </h3>
+
+          {/* Excerpt */}
+          <p class="text-[15px] text-slate-500 leading-relaxed mb-6 line-clamp-3">
+            {post.excerpt}
+          </p>
+
+          {/* Author */}
+          <div class="mt-auto pt-4 border-t border-slate-50 flex items-center gap-2">
+            <span class="text-xs font-semibold text-slate-400 capitalize">
+              {t.by} <span class="text-slate-900 font-bold">{post.author}</span>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+    {/* Mobile CTA */}
+    <div class="mt-12 md:hidden">
+      <a 
+        href={lang === 'id' ? '/blog' : '/en/blog'} 
+        class="flex items-center justify-center gap-3 w-full bg-slate-900 text-white h-14 rounded-2xl font-bold text-sm uppercase tracking-widest transition-all"
+      >
+        {t.seeMore}
+        <ArrowRight class="w-4 h-4" />
+      </a>
+    </div>
+
+  </div>
+</section>

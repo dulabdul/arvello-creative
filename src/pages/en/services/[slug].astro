@@ -1,0 +1,171 @@
+---
+// src/pages/en/services/[slug].astro
+// Dedicated service category page — e.g. /en/services/landing-page
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServicesHero from '@/components/section/ServicesHero.astro';
+import Pricing from '@/components/section/Pricing.astro';
+import FAQ from '@/components/section/FAQ.astro';
+import Contact from '@/components/section/Contact.astro';
+import { sanityClient } from '@/lib/sanity';
+import About from '@/components/section/About.astro';
+import ServicesWhatWeDo from '@/components/section/ServicesWhatWeDo.astro';
+import HowItWorks from '@/components/section/HowItWorks.astro';
+import SiloContent from '@/components/section/SiloContent.astro';
+import BlogOverview from '@/components/section/BlogOverview.astro';
+
+const lang = 'en';
+let aboutData = null;
+let whatWeDoData = null;
+let howItWorksData = null;
+try {
+  [aboutData, whatWeDoData, howItWorksData] = await Promise.all([
+    sanityClient.fetch(`*[_type == "about"][0]`),
+    sanityClient.fetch(`*[_type == "whatWeDo"][0]`),
+    sanityClient.fetch(`*[_type == "howItWorks"][0]`),
+  ]);
+} catch (error) {
+  console.error('Sanity Fetch Error (layanan.astro):', error);
+}
+
+// ─── Static path generation ───────────────────────────────────────────────────
+export async function getStaticPaths() {
+  const toSlug = (s: string) =>
+    s
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+
+  const categories: string[] = await sanityClient.fetch(
+    `*[_type == "pricingSection"][0].pricingPackages[].category.id`,
+  );
+  const unique = [...new Set(categories.filter(Boolean))];
+  return unique.map((name) => ({
+    params: { slug: toSlug(name) },
+    props: { categoryName: name },
+  }));
+}
+
+const { slug } = Astro.params;
+const { categoryName } = Astro.props;
+
+const pageTitle = `${categoryName} — Our Services`;
+const pageDesc = `${categoryName} packages from Arvello Creative — professional digital solutions with transparent pricing and full-featured deliverables.`;
+
+// --- SILO SEO CONTENT DATA MAPPING (English) ---
+const isWebsiteCategory = slug.includes('website');
+
+const siloData = isWebsiteCategory ? {
+  title: `Professional Web Design Services in Tangerang`,
+  intro: `Resolusiweb provides professional website services in Tangerang designed to help businesses, SMEs, and companies have modern, fast, and effective websites that support digital business growth. As a professional web development service, we start every project by understanding business needs, website goals, and the target market so that the end result is not only visually appealing but also optimal in functionality and user experience.\n\nThrough our professional website services in Tangerang, you get planned and transparent web development solutions. We ensure responsive design across all devices, SEO-friendly page structures, and a professional look that builds trust with potential customers.`,
+  secondaryTitle: `Our Other Services`,
+  secondaryContent: `Resolusiweb also provides SEO services, SEO article writing, UI/UX optimization, and digital marketing tool integration. Every website is built with a strong SEO structure, professional design, and optimal performance so it's ready to be used as a medium for branding and online marketing.`,
+  benefitsTitle: `Why Do You Need a Professional Website?`,
+  benefits: [
+    "Professional look that builds customer trust",
+    "Easy for customers to find business information",
+    "Enhanced brand credibility and image",
+    "Ready for digital marketing strategies",
+    "24/7 active online promotion media"
+  ],
+  faqTitle: `Professional Web Design FAQ in Tangerang`,
+  faqs: [
+    { q: "What is Tangerang professional web design service?", a: "It's a web development service specifically designed to help businesses have modern, responsive websites according to current digital standards." },
+    { q: "Why does a business need a professional website?", a: "A professional website helps build business credibility and makes it easier for customers to get information quickly." },
+    { q: "How long is the web development process?", a: "The process generally takes 2 to 6 weeks, depending on design complexity and feature requirements." },
+    { q: "Is the website SEO-friendly?", a: "Yes, every website built by Resolusiweb uses an SEO-friendly structure, from page layout to speed and basic SEO settings." }
+  ],
+  footerTitle: `Tangerang Web Development Solutions`,
+  footerContent: `Don't have a website yet or want a high-quality one at an affordable price? Trust your company's web development to us. We combine premium aesthetics with strong technical functionality to ensure your success.`
+} : {
+  // Generic Fallback
+  title: `Professional ${categoryName} Services`,
+  intro: `Resolusiweb provides ${categoryName} services designed specifically to increase your business performance in the digital realm. With a strategic approach and professional execution, we ensure every project delivers real impact.`,
+  benefitsTitle: `Why Choose Us for ${categoryName}?`,
+  benefits: [
+    `Certified expert team with years of experience`,
+    `Data-driven approach for maximum results`,
+    `Transparent process and regular communication`,
+    `Customized solutions for your specific business needs`
+  ],
+  faqTitle: `Questions about ${categoryName}`,
+  faqs: [
+    { q: `What are the advantages of ${categoryName} at Arvello?`, a: `We combine premium design aesthetics with strong technical functionality to ensure your ${categoryName} stands out.` },
+    { q: `What is the delivery process?`, a: `The process starts with consultation, strategy, design, through implementation and periodic reviews.` }
+  ],
+  footerTitle: `Grow Your Business with ${categoryName}`,
+  footerContent: `Ready to take the next step? Contact us now to discuss how our ${categoryName} services can help you achieve this year's business targets.`
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={pageTitle}
+  description={pageDesc}>
+  {/* JSON-LD BreadcrumbList */}
+  <script
+    type='application/ld+json'
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://arvellocreative.com/en/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Services',
+          item: 'https://arvellocreative.com/en/services',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: categoryName,
+          item: `https://arvellocreative.com/en/services/${slug}`,
+        },
+      ],
+    })}
+  />
+
+  <ServicesHero
+    lang={lang}
+    headlinePre='Service'
+    headlineAccent={categoryName}
+    headlineSuf='Professional'
+    description={`Premium digital solutions for your ${categoryName} business needs. We help develop your digital potential with the right strategy.`}
+  />
+  <About
+    lang={lang}
+    headline={aboutData?.headline}
+    description={aboutData?.description}
+    statistics={aboutData?.statistics}
+  />
+
+  <ServicesWhatWeDo
+    lang={lang}
+    headline={whatWeDoData?.headline}
+    description={whatWeDoData?.description}
+    gridItems={whatWeDoData?.gridItems}
+  />
+  <Pricing
+    lang={lang}
+    highlightCategory={categoryName}
+  />
+  <HowItWorks
+    lang={lang}
+    headline={howItWorksData?.headline}
+    description={howItWorksData?.description}
+    mainImage={howItWorksData?.mainImage}
+    steps={howItWorksData?.steps}
+  />
+  <SiloContent lang={lang} data={siloData} />
+  <BlogOverview lang={lang} categorySlug={slug} />
+  <FAQ lang={lang} />
+
+  <Contact lang={lang} />
+</BaseLayout>

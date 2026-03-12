@@ -3,6 +3,9 @@
 @import "shadcn/tailwind.css";
 @plugin "@tailwindcss/typography";
 
+/* ── Suranna from Google Fonts ── */
+@import url('https://fonts.googleapis.com/css2?family=Suranna&display=swap');
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
@@ -118,8 +121,27 @@
 @layer base {
   * {
     @apply border-border outline-ring/50;
-    }
+  }
   body {
     @apply bg-background text-foreground;
-    }
+    font-family: 'Suranna', Georgia, serif;
+    letter-spacing: 0.01em;
+  }
+
+  /* Large display headings — tighten tracking, generous line-height */
+  h1 {
+    font-family: 'Suranna', Georgia, serif;
+    letter-spacing: -0.02em;
+    line-height: 1.07;
+  }
+  h2 {
+    font-family: 'Suranna', Georgia, serif;
+    letter-spacing: -0.015em;
+    line-height: 1.12;
+  }
+  h3, h4 {
+    font-family: 'Suranna', Georgia, serif;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+  }
 }

@@ -6,8 +6,9 @@ import PricingCarousel, { type PricingPackage } from '../ui/pricingCarousel';
 
 export interface Props {
   lang: 'id' | 'en';
+  highlightCategory?: string;
 }
-const { lang } = Astro.props;
+const { lang, highlightCategory } = Astro.props;
 
 // --- Data Fetching ---
 let sectionData: any = null;
@@ -19,10 +20,14 @@ try {
 }
 
 // --- Localize Static Text (KOLOM KIRI) ---
+// If highlightCategory is provided, we can dynamically adjust the subheadline
 const headline = sectionData?.headline?.[lang] || 'Pricing';
-const subheadline =
-  sectionData?.subheadline?.[lang] ||
-  "Take a look at some of our recent projects to see how we've helped businesses like yours succeed online.";
+const subheadline = highlightCategory 
+  ? (lang === 'id' 
+      ? `Lihat paket harga khusus untuk ${highlightCategory} yang kami tawarkan untuk membantu bisnis Anda.`
+      : `Check out our specialized pricing packages for ${highlightCategory} designed to help your business.`)
+  : (sectionData?.subheadline?.[lang] || "Take a look at some of our recent projects to see how we've helped businesses like yours succeed online.");
+
 const leftCardTitle =
   sectionData?.leftCardTitle?.[lang] || "Let's Schedule a Meeting";
 const leftCardButtonText =
@@ -30,15 +35,15 @@ const leftCardButtonText =
 
 // Setup WA Link untuk Kolom Kiri
 const waNumber = sectionData?.whatsappNumber || '6281234567890';
-const defaultWaMsg =
-  sectionData?.defaultWhatsappMessage?.[lang] ||
-  'Halo, saya ingin menjadwalkan meeting.';
+const defaultWaMsg = highlightCategory
+  ? (lang === 'id' ? `Halo, saya ingin bertanya tentang paket ${highlightCategory}.` : `Hi, I'd like to ask about the ${highlightCategory} package.`)
+  : (sectionData?.defaultWhatsappMessage?.[lang] || 'Halo, saya ingin menjadwalkan meeting.');
 const leftWaLink = `https://wa.me/${waNumber}?text=${encodeURIComponent(defaultWaMsg)}`;
 
 // --- Process Packages untuk Carousel (KOLOM KANAN) ---
 const rawPackages = sectionData?.pricingPackages || [];
 
-const processedPackages: PricingPackage[] = rawPackages.map((pkg: any) => {
+const allPackages: PricingPackage[] = rawPackages.map((pkg: any) => {
   const price = lang === 'id' ? pkg.priceIdr || 'Rp 0' : pkg.priceUsd || '$0';
   const originalPrice =
     lang === 'id' ? pkg.originalPriceIdr : pkg.originalPriceUsd;
@@ -54,16 +59,22 @@ const processedPackages: PricingPackage[] = rawPackages.map((pkg: any) => {
   return {
     _key: pkg._key,
     name: pkg.packageName?.[lang] || 'Plan',
-    category: pkg.category?.[lang] || (lang === 'id' ? 'Lainnya' : 'General'),
+    // Using .id as per previous task requirement (not translated)
+    category: pkg.category?.id || (lang === 'id' ? 'Lainnya' : 'General'),
     description: pkg.packageDescription?.[lang] || '',
     price: price,
     originalPrice: originalPrice,
     billingCycle: pkg.billingCycle?.[lang] || '',
     features: features,
     waLink: waLink,
-    isPopular: pkg.isPopular || false, // Mapping boolean ke component
+    isPopular: pkg.isPopular || false,
   };
 });
+
+// Filter by category if prop is provided
+const processedPackages = highlightCategory
+  ? allPackages.filter(pkg => pkg.category === highlightCategory)
+  : allPackages;
 ---
 
 <section

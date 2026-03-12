@@ -9,6 +9,7 @@ import WhatWeDo from '@/components/section/WhatWeDo.astro';
 import Portfolio from '@/components/section/Portfolio.astro';
 import Pricing from '@/components/section/Pricing.astro';
 import Template from '@/components/section/Template.astro';
+import BlogOverview from '@/components/section/BlogOverview.astro';
 import FAQ from '@/components/section/FAQ.astro';
 import Contact from '@/components/section/Contact.astro';
 import Templates from '../templates.astro';
@@ -57,6 +58,7 @@ try {
   />
   <Portfolio lang='en' />
   <Pricing lang='en' />
+  <BlogOverview lang='en' limit={3} />
   {isDevMode && <Templates />}
   <FAQ lang='en' />
   <Contact lang='en' />

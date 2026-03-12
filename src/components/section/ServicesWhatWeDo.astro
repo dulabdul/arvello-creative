@@ -1,0 +1,172 @@
+---
+// src/components/section/ServicesWhatWeDo.astro
+// Redesigned "What We Do" section exclusively for the /services page.
+// Minimal, editorial 2025-2026 design — numbered list + icon + description.
+// Data is sourced from the existing Sanity `whatWeDo` schema.
+
+import { urlFor } from '@/lib/sanity';
+import { Image } from 'astro:assets';
+
+// ─── TypeScript Interfaces (matches existing Sanity schema) ───────────────────
+interface BaseBlock {
+  _type: 'serviceBlock' | 'brandBlock' | 'imageBlock';
+  _key: string;
+}
+
+interface ServiceBlock extends BaseBlock {
+  _type: 'serviceBlock';
+  iconSvgPath?: string;
+  title?: { id?: string; en?: string };
+  description?: { id?: string; en?: string };
+}
+
+interface BrandBlock extends BaseBlock {
+  _type: 'brandBlock';
+  image?: any;
+}
+
+interface ImageBlock extends BaseBlock {
+  _type: 'imageBlock';
+  photo?: any;
+}
+
+type GridItem = ServiceBlock | BrandBlock | ImageBlock;
+
+export interface Props {
+  lang: 'id' | 'en';
+  headline?: { id?: string; en?: string };
+  description?: { id?: string; en?: string };
+  gridItems?: GridItem[];
+}
+
+const { lang, headline, description, gridItems = [] } = Astro.props;
+
+// ─── Only render serviceBlocks in this new design ─────────────────────────────
+const serviceItems = gridItems.filter(
+  (item): item is ServiceBlock => item._type === 'serviceBlock',
+);
+
+const displayHeadline =
+  headline?.[lang] || (lang === 'id' ? 'Apa yang Kami Lakukan' : 'What We Do');
+const displayDesc = description?.[lang] || '';
+---
+
+<section
+  id='services-what-we-do'
+  class='py-24 md:py-36 bg-white border-t border-slate-100'
+  aria-labelledby='svc-wwd-heading'>
+  <div class='container mx-auto px-4 max-w-7xl'>
+    {/* ── Section Header ── */}
+    <div class='grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 mb-16 md:mb-24'>
+      <div>
+        <p
+          class='text-xs font-bold text-blue-600 uppercase tracking-[0.25em] mb-4'>
+          {lang === 'id' ? 'Keahlian Kami' : 'Our Expertise'}
+        </p>
+        <h2
+          id='svc-wwd-heading'
+          class='text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight tracking-tight'>
+          {displayHeadline}
+        </h2>
+      </div>
+      {
+        displayDesc && (
+          <div class='flex items-end'>
+            <p class='text-lg text-slate-500 leading-relaxed'>{displayDesc}</p>
+          </div>
+        )
+      }
+    </div>
+
+    {/* ── Service List ── */}
+    {
+      serviceItems.length > 0 ? (
+        <div class='divide-y divide-slate-100'>
+          {serviceItems.map((item, i) => {
+            const title = item.title?.[lang] || 'Service';
+            const desc = item.description?.[lang] || '';
+            const svgPath =
+              item.iconSvgPath ||
+              'M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5';
+            const num = String(i + 1).padStart(2, '0');
+
+            return (
+              <div class='group grid grid-cols-[3rem_1fr] lg:grid-cols-[3rem_1fr_auto] gap-x-6 lg:gap-x-12 items-start py-10 md:py-12 cursor-default hover:bg-slate-50/60 transition-colors duration-300 -mx-4 px-4 rounded-2xl'>
+                {/* Number */}
+                <span class='text-sm font-bold text-slate-300 group-hover:text-blue-500 transition-colors duration-300 pt-1 tabular-nums'>
+                  {num}
+                </span>
+
+                {/* Title + Description */}
+                <div class='flex flex-col gap-3'>
+                  <div class='flex items-center gap-4'>
+                    {/* Icon */}
+                    <div class='w-10 h-10 rounded-xl bg-slate-100 group-hover:bg-blue-50 flex items-center justify-center text-slate-500 group-hover:text-blue-600 transition-all duration-300 flex-shrink-0'>
+                      <svg
+                        xmlns='http://www.w3.org/2000/svg'
+                        viewBox='0 0 24 24'
+                        fill='none'
+                        stroke='currentColor'
+                        stroke-width='1.5'
+                        stroke-linecap='round'
+                        stroke-linejoin='round'
+                        class='w-5 h-5'>
+                        <path d={svgPath} />
+                      </svg>
+                    </div>
+                    <h3 class='text-xl md:text-2xl font-bold text-slate-900 leading-snug tracking-tight group-hover:text-blue-600 transition-colors duration-300'>
+                      {title}
+                    </h3>
+                  </div>
+
+                  {desc && (
+                    <p class='text-slate-500 leading-relaxed text-base md:text-lg max-w-2xl pl-14'>
+                      {desc}
+                    </p>
+                  )}
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div class='py-20 text-center text-slate-400 border-2 border-dashed border-slate-200 rounded-3xl'>
+          {lang === 'id'
+            ? 'Belum ada layanan yang ditambahkan di CMS.'
+            : 'No services added in CMS yet.'}
+        </div>
+      )
+    }
+
+    {/* ── Bottom CTA row ── */}
+    <div
+      class='mt-16 pt-10 border-t border-slate-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6'>
+      <p class='text-slate-500 text-base max-w-md'>
+        {
+          lang === 'id'
+            ? 'Tertarik bekerja sama? Mari diskusikan proyek Anda.'
+            : "Interested in working together? Let's discuss your project."
+        }
+      </p>
+      <a
+        href='#contact'
+        class='inline-flex items-center gap-2 text-slate-900 font-bold text-sm uppercase tracking-widest hover:text-blue-600 transition-colors duration-300 group'>
+        {lang === 'id' ? 'Hubungi Kami' : 'Contact Us'}
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          width='16'
+          height='16'
+          viewBox='0 0 24 24'
+          fill='none'
+          stroke='currentColor'
+          stroke-width='2.5'
+          stroke-linecap='round'
+          stroke-linejoin='round'
+          class='group-hover:translate-x-1 transition-transform duration-300'>
+          <path d='M5 12h14'></path>
+          <path d='m12 5 7 7-7 7'></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

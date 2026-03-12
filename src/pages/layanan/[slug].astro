@@ -1,0 +1,180 @@
+---
+// src/pages/layanan/[slug].astro
+// Dedicated service category page — e.g. /layanan/landing-page
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ServicesHero from '@/components/section/ServicesHero.astro';
+import Pricing from '@/components/section/Pricing.astro';
+import FAQ from '@/components/section/FAQ.astro';
+import Contact from '@/components/section/Contact.astro';
+import { sanityClient } from '@/lib/sanity';
+import About from '@/components/section/About.astro';
+import ServicesWhatWeDo from '@/components/section/ServicesWhatWeDo.astro';
+import HowItWorks from '@/components/section/HowItWorks.astro';
+import SiloContent from '@/components/section/SiloContent.astro';
+import BlogOverview from '@/components/section/BlogOverview.astro';
+
+const lang = 'id';
+let aboutData = null;
+let whatWeDoData = null;
+let howItWorksData = null;
+try {
+  [aboutData, whatWeDoData, howItWorksData] = await Promise.all([
+    sanityClient.fetch(`*[_type == "about"][0]`),
+    sanityClient.fetch(`*[_type == "whatWeDo"][0]`),
+    sanityClient.fetch(`*[_type == "howItWorks"][0]`),
+  ]);
+} catch (error) {
+  console.error('Sanity Fetch Error (layanan.astro):', error);
+}
+
+// ─── Static path generation ───────────────────────────────────────────────────
+export async function getStaticPaths() {
+  const toSlug = (s: string) =>
+    s
+      .toLowerCase()
+      .trim()
+      .replace(/\s+/g, '-')
+      .replace(/[^a-z0-9-]/g, '');
+
+  const categories: string[] = await sanityClient.fetch(
+    `*[_type == "pricingSection"][0].pricingPackages[].category.id`,
+  );
+  const unique = [...new Set(categories.filter(Boolean))];
+  return unique.map((name) => ({
+    params: { slug: toSlug(name) },
+    props: { categoryName: name },
+  }));
+}
+
+const { slug } = Astro.params;
+const { categoryName } = Astro.props;
+
+// Formatted title: "Landing Page" from slug "landing-page" is already in props
+const pageTitle = `${categoryName} — Layanan Kami`;
+const pageDesc = `Paket ${categoryName} dari Arvello Creative — solusi digital profesional dengan harga transparan dan fitur lengkap.`;
+
+// --- SILO SEO CONTENT DATA MAPPING ---
+// Handle specific logic for "Website" category as per user request
+const isWebsiteCategory = slug.includes('website');
+
+const siloData = isWebsiteCategory ? {
+  title: `Jasa Website Profesional di Tangerang`,
+  intro: `Resolusiweb menyediakan jasa website profesional Tangerang yang dirancang untuk membantu bisnis, UMKM, hingga perusahaan memiliki website yang modern, cepat, dan efektif dalam mendukung perkembangan bisnis digital. Sebagai jasa pembuatan website profesional, kami memulai setiap proyek dengan memahami kebutuhan bisnis, tujuan website, serta target pasar agar hasil akhir tidak hanya menarik secara visual tetapi juga optimal dari sisi fungsi dan pengalaman pengguna. Website yang kami bangun telah dioptimalkan dari segi struktur, kecepatan akses, dan kemudahan pengelolaan sehingga siap digunakan untuk kebutuhan branding maupun pemasaran online.\n\nMelalui layanan jasa website profesional Tangerang dari Resolusiweb, Anda mendapatkan solusi pembuatan website yang terencana dan transparan. Kami memastikan desain responsif di berbagai perangkat, struktur halaman yang SEO-friendly, serta tampilan profesional yang mampu meningkatkan kepercayaan calon pelanggan. Layanan ini cocok untuk bisnis yang ingin membangun identitas digital yang kuat, meningkatkan kredibilitas perusahaan, serta memaksimalkan potensi pemasaran online secara berkelanjutan di era digital saat ini.`,
+  secondaryTitle: `Layanan Kami Lainnya`,
+  secondaryContent: `Resolusiweb juga menyediakan jasa SEO, jasa artikel SEO, optimasi UI/UX, serta integrasi tools digital marketing yang dirancang untuk membantu bisnis di Tangerang berkembang secara digital. Setiap website dibuat dengan struktur SEO yang kuat, desain profesional, serta performa optimal agar siap digunakan sebagai media branding dan pemasaran online.\n\nDengan pengalaman menangani berbagai bisnis lokal hingga nasional, kami memahami kebutuhan website yang tidak hanya menarik secara visual, tetapi juga mampu meningkatkan kredibilitas dan mendukung pertumbuhan bisnis secara berkelanjutan di era digital.`,
+  benefitsTitle: `Mengapa Butuh Jasa Website Profesional?`,
+  benefits: [
+    "Website tampil profesional dan meningkatkan kepercayaan pelanggan",
+    "Memudahkan calon pelanggan menemukan informasi bisnis",
+    "Meningkatkan kredibilitas dan citra brand",
+    "Website siap digunakan untuk strategi digital marketing",
+    "Media promosi online yang aktif selama 24 jam"
+  ],
+  faqTitle: `FAQ Jasa Website Profesional di Tangerang`,
+  faqs: [
+    { q: "Apa itu jasa website profesional Tangerang?", a: "Jasa website profesional Tangerang adalah layanan pembuatan website yang dirancang secara khusus untuk membantu bisnis memiliki website yang modern, responsif, dan sesuai standar digital saat ini. Website digunakan sebagai media informasi, branding, serta pemasaran online." },
+    { q: "Mengapa bisnis membutuhkan website profesional?", a: "Website profesional membantu meningkatkan kredibilitas bisnis dan memudahkan calon pelanggan mendapatkan informasi secara cepat. Selain itu, website juga menjadi pusat aktivitas digital marketing yang dapat mendukung pertumbuhan bisnis secara berkelanjutan." },
+    { q: "Berapa lama proses pembuatan website?", a: "Proses pembuatan website umumnya membutuhkan waktu sekitar 2 hingga 6 minggu, tergantung pada kompleksitas desain, jumlah halaman, serta kebutuhan fitur yang diinginkan." },
+    { q: "Apakah website yang dibuat sudah SEO-friendly?", a: "Ya, setiap website yang dibuat oleh Resolusiweb telah menggunakan struktur SEO-friendly, mulai dari struktur halaman, kecepatan website, hingga pengaturan dasar SEO agar website lebih mudah ditemukan di mesin pencari Google." },
+    { q: "Apakah jasa website Tangerang cocok untuk UMKM?", a: "Layanan jasa website profesional Tangerang sangat cocok untuk UMKM, bisnis lokal, startup, hingga perusahaan yang ingin meningkatkan kehadiran digital dan memperluas jangkauan pasar secara online." },
+    { q: "Apa saja yang termasuk dalam layanan jasa website?", a: "Layanan jasa website Resolusiweb mencakup desain website, pengembangan halaman, optimasi kecepatan, desain responsif, struktur SEO dasar, serta pendampingan hingga website siap digunakan." },
+    { q: "Apakah Resolusiweb menyediakan support setelah website selesai?", a: "Ya, Resolusiweb menyediakan support dan pendampingan setelah website selesai dibuat untuk memastikan website berjalan dengan baik dan dapat digunakan secara optimal oleh klien." }
+  ],
+  footerTitle: `Solusi Pembuatan Website Tangerang`,
+  footerContent: `Anda belum memiliki website tapi ingin memiliki website yang berkualitas dengan harga murah? Mencari jasa pembuatan website tangerang yang terpercaya? Anda bisa datang ke kantor kami atau kami yang datang ke kantor Anda. Percayakan pembuatan website perusahaan Anda pada kami, kami akan membuat website company profile Anda dengan harga murah.\n\nKami hanya menggunakan teknik White Hat SEO yang lebih disukai oleh Google. Kami menawarkan jasa pembuatan website perusahaan dengan waktu pengerjaan mulai dari 1 hari hingga 14 hari kerja. Kami melayani kapanpun 24/7 dan mengerti kebutuhan bisnis Anda.`
+} : {
+  // Generic Fallback for other categories
+  title: `Layanan ${categoryName} Profesional`,
+  intro: `Resolusiweb menyediakan layanan ${categoryName} yang dirancang khusus untuk meningkatkan performa bisnis Anda di ranah digital. Dengan pendekatan strategis dan eksekusi profesional, kami memastikan setiap proyek memberikan dampak nyata bagi pertumbuhan brand Anda.`,
+  benefitsTitle: `Mengapa Memilih Kami untuk ${categoryName}?`,
+  benefits: [
+    `Tim ahli bersertifikat dengan pengalaman bertahun-tahun`,
+    `Pendekatan berbasis data untuk hasil maksimal`,
+    `Transparansi proses dan komunikasi rutin`,
+    `Customized solution sesuai kebutuhan spesifik bisnis Anda`,
+    `Support teknis berkelanjutan`
+  ],
+  faqTitle: `Pertanyaan seputar ${categoryName}`,
+  faqs: [
+    { q: `Apa keunggulan jasa ${categoryName} di Arvello?`, a: `Kami menggabungkan estetika desain premium dengan fungsionalitas teknis yang kuat untuk memastikan ${categoryName} Anda unggul di pasar.` },
+    { q: `Bagaimana proses pengerjaannya?`, a: `Proses dimulai dengan konsultasi, strategi, desain, hingga implementasi dan review berkala untuk memastikan target tercapai.` }
+  ],
+  footerTitle: `Tingkatkan Bisnis Anda dengan ${categoryName}`,
+  footerContent: `Siap melangkah lebih jauh? Hubungi kami sekarang untuk mendiskusikan bagaimana layanan ${categoryName} kami dapat membantu Anda mencapai target bisnis tahun ini.`
+};
+---
+
+<BaseLayout
+  lang={lang}
+  title={pageTitle}
+  description={pageDesc}>
+  {/* JSON-LD BreadcrumbList */}
+  <script
+    type='application/ld+json'
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Beranda',
+          item: 'https://arvellocreative.com/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Layanan',
+          item: 'https://arvellocreative.com/layanan',
+        },
+        {
+          '@type': 'ListItem',
+          position: 3,
+          name: categoryName,
+          item: `https://arvellocreative.com/layanan/${slug}`,
+        },
+      ],
+    })}
+  />
+
+  <ServicesHero
+    lang={lang}
+    headlinePre='Layanan'
+    headlineAccent={categoryName}
+    headlineSuf='Profesional'
+    description={`Solusi digital premium untuk kebutuhan ${categoryName} bisnis Anda. Kami bantu kembangkan potensi digital Anda dengan strategi yang tepat.`}
+  />
+  <About
+    lang={lang}
+    headline={aboutData?.headline}
+    description={aboutData?.description}
+    statistics={aboutData?.statistics}
+  />
+
+  <ServicesWhatWeDo
+    lang={lang}
+    headline={whatWeDoData?.headline}
+    description={whatWeDoData?.description}
+    gridItems={whatWeDoData?.gridItems}
+  />
+  {
+    /* Reuse Pricing section — shows all packages, user can filter by category */
+  }
+  <Pricing
+    lang={lang}
+    highlightCategory={categoryName}
+  />
+  <HowItWorks
+    lang={lang}
+    headline={howItWorksData?.headline}
+    description={howItWorksData?.description}
+    mainImage={howItWorksData?.mainImage}
+    steps={howItWorksData?.steps}
+  />
+  <SiloContent lang={lang} data={siloData} />
+  <BlogOverview lang={lang} categorySlug={slug} />
+  <FAQ lang={lang} />
+
+  <Contact lang={lang} />
+</BaseLayout>

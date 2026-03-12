@@ -1,0 +1,122 @@
+---
+import { Image } from 'astro:assets';
+import serviceMapImg from '@/assets/service-map.png';
+
+// src/components/section/ServicesHero.astro
+// Static hero content — edit the `content` object below to update copy.
+// Replace src/assets/services-hero.jpg with your actual image.
+
+interface Props {
+  lang: 'id' | 'en';
+  eyebrow?: string;
+  headlinePre?: string;
+  headlineAccent?: string;
+  headlineSuf?: string;
+  description?: string;
+}
+
+const {
+  lang,
+  eyebrow: propEyebrow,
+  headlinePre: propHeadlinePre,
+  headlineAccent: propHeadlineAccent,
+  headlineSuf: propHeadlineSuf,
+  description: propDescription,
+} = Astro.props;
+
+const defaults = {
+  id: {
+    eyebrow: 'Layanan Kami',
+    headlinePre: 'Solusi Digital yang',
+    headlineAccent: 'Berkelas',
+    headlineSuf: 'untuk Bisnis Anda.',
+    description:
+      'Kami merancang dan mengembangkan produk digital — dari landing page yang mengkonversi, company profile yang membangun kepercayaan, hingga e-commerce yang siap bersaing di pasar.',
+    cta: 'Mulai Konsultasi',
+    ctaHref: '#contact',
+  },
+  en: {
+    eyebrow: 'Our Services',
+    headlinePre: 'Digital Solutions That',
+    headlineAccent: 'Elevate',
+    headlineSuf: 'Your Business.',
+    description:
+      'We design and build premium digital products — from high-converting landing pages and trusted company profiles to fully-featured e-commerce stores ready to compete.',
+    cta: 'Start a Consultation',
+    ctaHref: '#contact',
+  },
+};
+
+const d = defaults[lang];
+
+const t = {
+  eyebrow: propEyebrow || d.eyebrow,
+  headlinePre: propHeadlinePre || d.headlinePre,
+  headlineAccent: propHeadlineAccent || d.headlineAccent,
+  headlineSuf: propHeadlineSuf || d.headlineSuf,
+  description: propDescription || d.description,
+  cta: d.cta,
+  ctaHref: d.ctaHref,
+};
+---
+
+<section
+  id='services-hero'
+  class='relative pt-32 pb-0 md:pt-44 bg-white'
+  aria-label='Services page hero'>
+  {/* Top accent line */}
+  <div
+    class='absolute top-0 left-0 w-full h-[3px] bg-gradient-to-r from-blue-600 via-indigo-500 to-transparent'>
+  </div>
+
+  {/* Full-width flex: left text padded to mirror container, right image bleeds to edge */}
+  <div class='flex flex-col lg:flex-row items-stretch'>
+
+    {/* LEFT: Text — pl mirrors max-w-7xl (80rem) auto-centering */}
+    <div class='w-full lg:w-1/2 px-4 py-16 md:py-24
+                lg:pl-[max(1rem,calc((100vw-80rem)/2+1rem))]
+                lg:pr-16'>
+
+      <p class='text-sm font-bold text-blue-600 uppercase tracking-[0.2em] mb-6'>
+        {t.eyebrow}
+      </p>
+
+      <h1 class='text-5xl md:text-6xl lg:text-[4.5rem] font-extrabold text-slate-900 leading-[1.08] tracking-tight mb-8'>
+        {t.headlinePre}{' '}
+        <span class='italic text-blue-600'>{t.headlineAccent}</span>
+        {' '}{t.headlineSuf}
+      </h1>
+
+      <p class='text-lg text-slate-500 leading-relaxed mb-10 max-w-lg'>
+        {t.description}
+      </p>
+
+      <a
+        href={t.ctaHref}
+        class='inline-flex items-center gap-3 bg-slate-900 hover:bg-slate-700 text-white font-semibold px-8 h-14 rounded-2xl text-sm uppercase tracking-widest shadow-sm hover:shadow-lg transition-all duration-300'>
+        {t.cta}
+        <svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'>
+          <path d='M5 12h14'></path>
+          <path d='m12 5 7 7-7 7'></path>
+        </svg>
+      </a>
+    </div>
+
+    {/* RIGHT: Image — no right padding, bleeds to viewport edge on desktop */}
+    <div class='w-full px-4 pb-8 lg:px-0 lg:pb-0 lg:w-1/2 h-[280px] lg:h-auto lg:min-h-[600px] overflow-hidden lg:rounded-l-3xl'>
+      <Image
+        src={serviceMapImg}
+        alt='Services illustration'
+        width={960}
+        height={680}
+        class='w-full h-full object-cover'
+        quality={85}
+        loading='eager'
+      />
+    </div>
+
+  </div>
+
+  {/* Bottom divider */}
+  <div class='w-full border-t border-slate-100'></div>
+</section>

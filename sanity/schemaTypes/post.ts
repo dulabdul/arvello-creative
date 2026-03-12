@@ -43,10 +43,11 @@ export default defineType({
       to: { type: 'author' },
     }),
     defineField({
-      name: 'category',
-      title: 'Category',
-      type: 'reference',
-      to: { type: 'category' },
+      name: 'categories',
+      title: 'Categories (Max 2)',
+      type: 'array',
+      of: [{ type: 'reference', to: { type: 'category' } }],
+      validation: (Rule) => Rule.min(1).max(2),
     }),
     defineField({
       name: 'mainImage',
