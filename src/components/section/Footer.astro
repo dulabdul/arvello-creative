@@ -5,9 +5,10 @@ import { getNavLinks } from '@/config/navigation';
 
 export interface Props {
   lang: 'id' | 'en';
+  serviceCategories?: { name: string; slug: string }[];
 }
 
-const { lang } = Astro.props;
+const { lang, serviceCategories = [] } = Astro.props;
 
 // --- Data Fetching ---
 let siteSettings: any = null;
@@ -64,16 +65,16 @@ const madeWithLove =
     class='bg-white/60 backdrop-blur-xl border-t border-white/60 shadow-[0_-8px_32px_rgba(0,0,0,0.02)] pt-16 md:pt-20 pb-10'>
     <div class='container mx-auto px-4 max-w-7xl'>
       {/* Top Section: Brand & Navigation */}
+      {/* Top Section: Multi-Column Grid */}
       <div
-        class='flex flex-col lg:flex-row justify-between items-start gap-12 lg:gap-8 mb-16'>
-        {/* Left: Brand, Description & Payments */}
-        <div class='max-w-md w-full'>
+        class='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 mb-16'>
+        {/* Kolom 1: Brand & Info (lg:col-span-4) */}
+        <div class='lg:col-span-4'>
           {/* Logo Brand */}
           <a
             href={lang === 'id' ? '/' : '/en/'}
             class='flex items-center gap-2 font-bold text-2xl tracking-tight text-slate-900 hover:opacity-80 transition-opacity mb-6 inline-flex'>
             <div class='bg-slate-900 text-white p-1 rounded-md'>
-              {/* Lightning Zap Icon */}
               <svg
                 xmlns='http://www.w3.org/2000/svg'
                 width='20'
@@ -88,45 +89,89 @@ const madeWithLove =
           </a>
 
           {/* Short Description */}
-          <p class='text-slate-600 leading-relaxed text-base'>
+          <p class='text-slate-600 leading-relaxed text-base max-w-sm'>
             {description}
           </p>
+        </div>
 
-          {/* --- PAYMENT CHANNELS SECTION --- */}
+        {/* Kolom 2: Company (lg:col-span-2) */}
+        <div class='lg:col-span-2'>
+          <h3
+            class='text-sm font-bold text-slate-900 uppercase tracking-widest mb-6'>
+            {lang === 'id' ? 'Menu' : 'Menu'}
+          </h3>
+          <nav class='flex flex-col gap-4'>
+            {
+              navLinks.map((link) => (
+                <a
+                  href={link.href}
+                  class='text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors'>
+                  {link.name}
+                </a>
+              ))
+            }
+          </nav>
+        </div>
+
+        {/* Kolom 3: Layanan Kami (lg:col-span-3) */}
+        <div class='lg:col-span-3'>
+          <h3
+            class='text-sm font-bold text-slate-900 uppercase tracking-widest mb-6'>
+            {lang === 'id' ? 'Layanan Kami' : 'Our Services'}
+          </h3>
+          <nav class='flex flex-col gap-4'>
+            {
+              serviceCategories.map((cat) => (
+                <a
+                  href={
+                    lang === 'id'
+                      ? `/layanan/${cat.slug}`
+                      : `/en/services/${cat.slug}`
+                  }
+                  class='text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors'>
+                  {cat.name}
+                </a>
+              ))
+            }
+            {
+              serviceCategories.length === 0 && (
+                <a
+                  href={lang === 'id' ? '/services' : '/en/services'}
+                  class='text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors'>
+                  {lang === 'id' ? 'Lihat Semua Layanan' : 'View All Services'}
+                </a>
+              )
+            }
+          </nav>
+        </div>
+
+        {/* Kolom 4: Pembayaran (lg:col-span-3) */}
+        <div class='lg:col-span-3'>
           {
             paymentMethods.length > 0 && (
-              <div class='mt-8 pt-6 border-t border-slate-200/60'>
-                <p class='text-sm font-bold text-slate-900 mb-4'>
-                  {lang === 'id' ? 'Metode Pembayaran:' : 'Payment Channels:'}
-                </p>
-                <div class='flex flex-col gap-3'>
+              <>
+                <h3 class='text-sm font-bold text-slate-900 uppercase tracking-widest mb-6'>
+                  {lang === 'id' ? 'Metode Pembayaran' : 'Payment Methods'}
+                </h3>
+                <div class='flex flex-col gap-6'>
                   {paymentMethods.map((method: any) => (
-                    <div class='flex items-center gap-3 flex-wrap'>
-                      <span class='text-[11px] font-bold text-slate-500 uppercase tracking-wider w-20 flex-shrink-0'>
+                    <div>
+                      <p class='text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3 text-fuchsia-600/60'>
                         {method.categoryName}
-                      </span>
-                      <div class='flex flex-wrap items-center gap-3 md:gap-4'>
+                      </p>
+                      <div class='flex flex-wrap gap-2'>
                         {method.logos?.map((logo: any) => {
                           if (!logo.image) return null;
                           return (
                             <div
-                              class='bg-white border border-slate-200 rounded-xl px-3 py-1 flex items-center justify-center shadow-sm h-12 md:h-14 min-w-[5rem] group hover:border-blue-300 hover:shadow-md transition-all duration-300 cursor-pointer'
+                              class='bg-white border border-slate-100 rounded-lg p-2 flex items-center justify-center h-10 w-14 shadow-sm grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all border-slate-200'
                               title={logo.name}>
-                              {method.categoryName === 'Bank' ? (
-                                <img
-                                  src={urlFor(logo.image).height(80).url()}
-                                  alt={logo.name}
-                                  class='h-5 md:h-12 w-auto object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300'
-                                  loading='lazy'
-                                />
-                              ) : (
-                                <img
-                                  src={urlFor(logo.image).height(60).url()}
-                                  alt={logo.name}
-                                  class='h-5 md:h-6 w-auto object-contain grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-300'
-                                  loading='lazy'
-                                />
-                              )}
+                              <img
+                                src={urlFor(logo.image).height(40).url()}
+                                alt={logo.name}
+                                class='h-full w-auto object-contain'
+                                loading='lazy'
+                              />
                             </div>
                           );
                         })}
@@ -134,23 +179,10 @@ const madeWithLove =
                     </div>
                   ))}
                 </div>
-              </div>
+              </>
             )
           }
         </div>
-
-        {/* Right: Nav Links */}
-        <nav class='flex flex-wrap gap-6 md:gap-10 lg:pl-10'>
-          {
-            navLinks.map((link) => (
-              <a
-                href={link.href}
-                class='text-sm md:text-base font-semibold text-slate-500 hover:text-slate-900 transition-colors'>
-                {link.name}
-              </a>
-            ))
-          }
-        </nav>
       </div>
 
       {/* Bottom Section: Copyright & Social/Contact Icons */}

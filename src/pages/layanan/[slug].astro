@@ -57,51 +57,98 @@ const pageDesc = `Paket ${categoryName} dari Arvello Creative — solusi digital
 // Handle specific logic for "Website" category as per user request
 const isWebsiteCategory = slug.includes('website');
 
-const siloData = isWebsiteCategory ? {
-  title: `Jasa Website Profesional di Tangerang`,
-  intro: `Resolusiweb menyediakan jasa website profesional Tangerang yang dirancang untuk membantu bisnis, UMKM, hingga perusahaan memiliki website yang modern, cepat, dan efektif dalam mendukung perkembangan bisnis digital. Sebagai jasa pembuatan website profesional, kami memulai setiap proyek dengan memahami kebutuhan bisnis, tujuan website, serta target pasar agar hasil akhir tidak hanya menarik secara visual tetapi juga optimal dari sisi fungsi dan pengalaman pengguna. Website yang kami bangun telah dioptimalkan dari segi struktur, kecepatan akses, dan kemudahan pengelolaan sehingga siap digunakan untuk kebutuhan branding maupun pemasaran online.\n\nMelalui layanan jasa website profesional Tangerang dari Resolusiweb, Anda mendapatkan solusi pembuatan website yang terencana dan transparan. Kami memastikan desain responsif di berbagai perangkat, struktur halaman yang SEO-friendly, serta tampilan profesional yang mampu meningkatkan kepercayaan calon pelanggan. Layanan ini cocok untuk bisnis yang ingin membangun identitas digital yang kuat, meningkatkan kredibilitas perusahaan, serta memaksimalkan potensi pemasaran online secara berkelanjutan di era digital saat ini.`,
-  secondaryTitle: `Layanan Kami Lainnya`,
-  secondaryContent: `Resolusiweb juga menyediakan jasa SEO, jasa artikel SEO, optimasi UI/UX, serta integrasi tools digital marketing yang dirancang untuk membantu bisnis di Tangerang berkembang secara digital. Setiap website dibuat dengan struktur SEO yang kuat, desain profesional, serta performa optimal agar siap digunakan sebagai media branding dan pemasaran online.\n\nDengan pengalaman menangani berbagai bisnis lokal hingga nasional, kami memahami kebutuhan website yang tidak hanya menarik secara visual, tetapi juga mampu meningkatkan kredibilitas dan mendukung pertumbuhan bisnis secara berkelanjutan di era digital.`,
-  benefitsTitle: `Mengapa Butuh Jasa Website Profesional?`,
-  benefits: [
-    "Website tampil profesional dan meningkatkan kepercayaan pelanggan",
-    "Memudahkan calon pelanggan menemukan informasi bisnis",
-    "Meningkatkan kredibilitas dan citra brand",
-    "Website siap digunakan untuk strategi digital marketing",
-    "Media promosi online yang aktif selama 24 jam"
-  ],
-  faqTitle: `FAQ Jasa Website Profesional di Tangerang`,
-  faqs: [
-    { q: "Apa itu jasa website profesional Tangerang?", a: "Jasa website profesional Tangerang adalah layanan pembuatan website yang dirancang secara khusus untuk membantu bisnis memiliki website yang modern, responsif, dan sesuai standar digital saat ini. Website digunakan sebagai media informasi, branding, serta pemasaran online." },
-    { q: "Mengapa bisnis membutuhkan website profesional?", a: "Website profesional membantu meningkatkan kredibilitas bisnis dan memudahkan calon pelanggan mendapatkan informasi secara cepat. Selain itu, website juga menjadi pusat aktivitas digital marketing yang dapat mendukung pertumbuhan bisnis secara berkelanjutan." },
-    { q: "Berapa lama proses pembuatan website?", a: "Proses pembuatan website umumnya membutuhkan waktu sekitar 2 hingga 6 minggu, tergantung pada kompleksitas desain, jumlah halaman, serta kebutuhan fitur yang diinginkan." },
-    { q: "Apakah website yang dibuat sudah SEO-friendly?", a: "Ya, setiap website yang dibuat oleh Resolusiweb telah menggunakan struktur SEO-friendly, mulai dari struktur halaman, kecepatan website, hingga pengaturan dasar SEO agar website lebih mudah ditemukan di mesin pencari Google." },
-    { q: "Apakah jasa website Tangerang cocok untuk UMKM?", a: "Layanan jasa website profesional Tangerang sangat cocok untuk UMKM, bisnis lokal, startup, hingga perusahaan yang ingin meningkatkan kehadiran digital dan memperluas jangkauan pasar secara online." },
-    { q: "Apa saja yang termasuk dalam layanan jasa website?", a: "Layanan jasa website Resolusiweb mencakup desain website, pengembangan halaman, optimasi kecepatan, desain responsif, struktur SEO dasar, serta pendampingan hingga website siap digunakan." },
-    { q: "Apakah Resolusiweb menyediakan support setelah website selesai?", a: "Ya, Resolusiweb menyediakan support dan pendampingan setelah website selesai dibuat untuk memastikan website berjalan dengan baik dan dapat digunakan secara optimal oleh klien." }
-  ],
-  footerTitle: `Solusi Pembuatan Website Tangerang`,
-  footerContent: `Anda belum memiliki website tapi ingin memiliki website yang berkualitas dengan harga murah? Mencari jasa pembuatan website tangerang yang terpercaya? Anda bisa datang ke kantor kami atau kami yang datang ke kantor Anda. Percayakan pembuatan website perusahaan Anda pada kami, kami akan membuat website company profile Anda dengan harga murah.\n\nKami hanya menggunakan teknik White Hat SEO yang lebih disukai oleh Google. Kami menawarkan jasa pembuatan website perusahaan dengan waktu pengerjaan mulai dari 1 hari hingga 14 hari kerja. Kami melayani kapanpun 24/7 dan mengerti kebutuhan bisnis Anda.`
-} : {
-  // Generic Fallback for other categories
-  title: `Layanan ${categoryName} Profesional`,
-  intro: `Resolusiweb menyediakan layanan ${categoryName} yang dirancang khusus untuk meningkatkan performa bisnis Anda di ranah digital. Dengan pendekatan strategis dan eksekusi profesional, kami memastikan setiap proyek memberikan dampak nyata bagi pertumbuhan brand Anda.`,
-  benefitsTitle: `Mengapa Memilih Kami untuk ${categoryName}?`,
-  benefits: [
-    `Tim ahli bersertifikat dengan pengalaman bertahun-tahun`,
-    `Pendekatan berbasis data untuk hasil maksimal`,
-    `Transparansi proses dan komunikasi rutin`,
-    `Customized solution sesuai kebutuhan spesifik bisnis Anda`,
-    `Support teknis berkelanjutan`
-  ],
-  faqTitle: `Pertanyaan seputar ${categoryName}`,
-  faqs: [
-    { q: `Apa keunggulan jasa ${categoryName} di Arvello?`, a: `Kami menggabungkan estetika desain premium dengan fungsionalitas teknis yang kuat untuk memastikan ${categoryName} Anda unggul di pasar.` },
-    { q: `Bagaimana proses pengerjaannya?`, a: `Proses dimulai dengan konsultasi, strategi, desain, hingga implementasi dan review berkala untuk memastikan target tercapai.` }
-  ],
-  footerTitle: `Tingkatkan Bisnis Anda dengan ${categoryName}`,
-  footerContent: `Siap melangkah lebih jauh? Hubungi kami sekarang untuk mendiskusikan bagaimana layanan ${categoryName} kami dapat membantu Anda mencapai target bisnis tahun ini.`
-};
+const siloData = isWebsiteCategory
+  ? {
+      title: `Jasa Website Profesional di Tangerang dan Serang`,
+      intro: `Resolusiweb menyediakan jasa website profesional Tangerang dan Serang yang dirancang untuk membantu bisnis, UMKM, hingga perusahaan memiliki website yang modern, cepat, dan efektif dalam mendukung perkembangan bisnis digital. Sebagai jasa pembuatan website profesional, kami memulai setiap proyek dengan memahami kebutuhan bisnis, tujuan website, serta target pasar di wilayah Banten agar hasil akhir tidak hanya menarik secara visual tetapi juga optimal dari sisi fungsi dan pengalaman pengguna. Website yang kami bangun telah dioptimalkan dari segi struktur, kecepatan akses, dan kemudahan pengelolaan sehingga siap digunakan untuk kebutuhan branding maupun pemasaran online.\n\nMelalui layanan jasa website profesional Tangerang dan Serang dari Resolusiweb, Anda mendapatkan solusi pembuatan website yang terencana dan transparan. Kami memastikan desain responsif di berbagai perangkat, struktur halaman yang SEO-friendly, serta tampilan profesional yang mampu meningkatkan kepercayaan calon pelanggan. Layanan ini cocok untuk bisnis yang ingin membangun identitas digital yang kuat, meningkatkan kredibilitas perusahaan, serta memaksimalkan potensi pemasaran online secara berkelanjutan di era digital saat ini.`,
+      secondaryTitle: `Layanan Kami Lainnya`,
+      secondaryContent: `Resolusiweb juga menyediakan jasa SEO, jasa artikel SEO, optimasi UI/UX, serta integrasi tools digital marketing yang dirancang untuk membantu bisnis di Tangerang, Serang, dan sekitarnya berkembang secara digital. Setiap website dibuat dengan struktur SEO yang kuat, desain profesional, serta performa optimal agar siap digunakan sebagai media branding dan pemasaran online.\n\nDengan pengalaman menangani berbagai bisnis lokal hingga nasional, kami memahami kebutuhan website yang tidak hanya menarik secara visual, tetapi juga mampu meningkatkan kredibilitas dan mendukung pertumbuhan bisnis secara berkelanjutan di era digital.`,
+      benefitsTitle: `Mengapa Butuh Jasa Website Profesional di Banten?`,
+      benefits: [
+        'Website tampil profesional dan meningkatkan kepercayaan pelanggan',
+        'Memudahkan calon pelanggan di Tangerang & Serang menemukan informasi bisnis',
+        'Meningkatkan kredibilitas dan citra brand di pasar lokal Banten',
+        'Website siap digunakan untuk strategi digital marketing',
+        'Media promosi online yang aktif selama 24 jam',
+      ],
+      faqTitle: `FAQ Jasa Website Profesional di Tangerang & Serang`,
+      faqs: [
+        {
+          q: 'Apa itu jasa website profesional Tangerang & Serang?',
+          a: 'Jasa website profesional Tangerang & Serang adalah layanan pembuatan website yang dirancang secara khusus untuk membantu bisnis di wilayah Banten memiliki website yang modern, responsif, dan sesuai standar digital saat ini. Website digunakan sebagai media informasi, branding, serta pemasaran online.',
+        },
+        {
+          q: 'Mengapa bisnis membutuhkan website profesional?',
+          a: 'Website profesional membantu meningkatkan kredibilitas bisnis dan memudahkan calon pelanggan mendapatkan informasi secara cepat. Selain itu, website juga menjadi pusat aktivitas digital marketing yang dapat mendukung pertumbuhan bisnis secara berkelanjutan.',
+        },
+        {
+          q: 'Berapa lama proses pembuatan website?',
+          a: 'Proses pembuatan website umumnya membutuhkan waktu sekitar 2 hingga 6 minggu, tergantung pada kompleksitas desain, jumlah halaman, serta kebutuhan fitur yang diinginkan.',
+        },
+        {
+          q: 'Apakah website yang dibuat sudah SEO-friendly?',
+          a: 'Ya, setiap website yang dibuat oleh Resolusiweb telah menggunakan struktur SEO-friendly, mulai dari struktur halaman, kecepatan website, hingga pengaturan dasar SEO agar website lebih mudah ditemukan di mesin pencari Google oleh calon pelanggan di Tangerang dan Serang.',
+        },
+        {
+          q: 'Apakah jasa website ini cocok untuk UMKM di Serang?',
+          a: 'Layanan jasa website profesional kami sangat cocok untuk UMKM, bisnis lokal, startup, hingga perusahaan di wilayah Serang dan Tangerang yang ingin meningkatkan kehadiran digital dan memperluas jangkauan pasar secara online.',
+        },
+        {
+          q: 'Apa saja yang termasuk dalam layanan jasa website?',
+          a: 'Layanan jasa website Resolusiweb mencakup desain website, pengembangan halaman, optimasi kecepatan, desain responsif, struktur SEO dasar, serta pendampingan hingga website siap digunakan.',
+        },
+        {
+          q: 'Apakah Resolusiweb menyediakan support setelah website selesai?',
+          a: 'Ya, Resolusiweb menyediakan support dan pendampingan setelah website selesai dibuat untuk memastikan website berjalan dengan baik dan dapat digunakan secara optimal oleh klien di seluruh wilayah Banten.',
+        },
+      ],
+      footerTitle: `Solusi Pembuatan Website Tangerang & Serang`,
+      footerContent: `Anda belum memiliki website tapi ingin memiliki website yang berkualitas dengan harga murah? Mencari jasa pembuatan website Tangerang atau Serang yang terpercaya? Anda bisa datang ke kantor kami atau kami yang datang ke kantor Anda. Percayakan pembuatan website perusahaan Anda pada kami, kami akan membuat website company profile Anda dengan harga murah.\n\nKami hanya menggunakan teknik White Hat SEO yang lebih disukai oleh Google. Kami menawarkan jasa pembuatan website perusahaan dengan waktu pengerjaan mulai dari 1 hari hingga 14 hari kerja. Kami melayani kapanpun 24/7 dan mengerti kebutuhan bisnis Anda.`,
+    }
+  : {
+      title: `Tingkatkan Kredibilitas dan Skala Bisnis Anda melalui Layanan ${categoryName} Profesional di Tangerang & Serang`,
+
+      intro: `ArvelloCreative hadir memberikan solusi ${categoryName} yang dirancang khusus untuk membantu UMKM hingga perusahaan B2B di wilayah Tangerang, Serang, and sekitarnya melakukan scale-up digital. Kami tidak sekadar membuat desain yang estetis, tetapi merancang ekosistem website yang modern, sangat cepat, and SEO-friendly. Mulai dari analisis target pasar hingga optimasi konversi, kami memastikan aset digital Anda siap mendatangkan leads berkualitas and memenangkan persaingan bisnis di wilayah Banten.`,
+
+      benefitsTitle: `Mengapa Memilih Kami untuk ${categoryName}?`,
+
+      benefits: [
+        `Arsitektur web modern dengan kecepatan loading kilat untuk mencegah pengunjung kabur`,
+        `Optimasi struktur SEO On-Page (White Hat SEO) agar bisnis Anda mendominasi halaman pertama Google di wilayah Tangerang & Serang`,
+        `Desain UI/UX responsif & conversion-focused untuk mengubah pengunjung menjadi pembeli`,
+        `Struktur website yang mudah dikelola secara mandiri (User-Friendly CMS) tanpa perlu keahlian coding`,
+        `Dukungan teknis (Technical Support) 24/7 dan jaminan keamanan data berkelanjutan pasca-peluncuran`,
+      ],
+
+      faqTitle: `Pertanyaan seputar ${categoryName} di Tangerang & Serang`,
+
+      faqs: [
+        {
+          q: `Apa keunggulan jasa ${categoryName} dari ArvelloCreative dibandingkan agency lain di Tangerang/Serang?`,
+          a: `Kami memadukan desain visual premium dengan fondasi teknis tingkat tinggi yang relevan dengan pasar lokal Banten. Tidak seperti template instan, ${categoryName} kami dirancang custom, 100% SEO-friendly, and berfokus pada peningkatan ROI (Return on Investment) bisnis Anda.`,
+        },
+        {
+          q: `Apakah layanan ${categoryName} ini cocok untuk UMKM dan perusahaan B2B di Banten?`,
+          a: `Sangat cocok. Layanan kami dirancang fleksibel, mulai dari UMKM lokal di Serang yang ingin memperluas pasar digital, hingga perusahaan B2B di Tangerang yang membutuhkan ekosistem web kompleks untuk menggaet investor and klien korporat.`,
+        },
+        {
+          q: `Berapa lama estimasi proses pengerjaan untuk proyek ini?`,
+          a: `Secara umum memakan waktu 2 hingga 5 hari, tergantung pada kompleksitas fitur and kesiapan materi konten Anda. Kami selalu mengedepankan transparansi timeline sejak awal kickoff meeting.`,
+        },
+        {
+          q: `Apakah website yang dibuat sudah otomatis ramah mesin pencari (SEO-Friendly)?`,
+          a: `Ya, optimasi fundamental adalah standar kami. Seluruh layanan ${categoryName} dibangun dengan struktur kode yang bersih, loading cepat, and optimasi dasar SEO agar bisnis Anda mudah ditemukan di Google oleh konsumen lokal.`,
+        },
+        {
+          q: `Apakah ArvelloCreative menyediakan panduan and support setelah proyek selesai?`,
+          a: `Tentu. Kami memberikan pelatihan agar Anda bisa mengelola website secara mandiri. Kami juga menyediakan layanan support untuk memastikan ${categoryName} Anda selalu berjalan optimal di wilayah Serang and Tangerang.`,
+        },
+      ],
+
+      footerTitle: `Tingkatkan Bisnis Anda dengan ${categoryName} Hari Ini`,
+
+      footerContent: `Jangan tunda pertumbuhan bisnis Anda di wilayah Tangerang and Serang. Konsultasikan kebutuhan ${categoryName} Anda bersama tim ahli ArvelloCreative sekarang juga. Mari bangun aset digital berkinerja tinggi yang siap mendatangkan klien baru and meroketkan omset bisnis Anda secara otomatis.`,
+    };
 ---
 
 <BaseLayout
@@ -115,6 +162,7 @@ const siloData = isWebsiteCategory ? {
     set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
+      '@id': `${Astro.url.href}#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -132,11 +180,54 @@ const siloData = isWebsiteCategory ? {
           '@type': 'ListItem',
           position: 3,
           name: categoryName,
-          item: `https://arvellocreative.com/layanan/${slug}`,
+          item: Astro.url.href,
         },
       ],
     })}
   />
+
+  {/* Service Schema */}
+  <script
+    type='application/ld+json'
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      'name': `Jasa ${categoryName} Profesional di Tangerang & Serang`,
+      'description': pageDesc,
+      'provider': {
+        '@id': 'https://arvellocreative.com/#organization'
+      },
+      'areaServed': [
+        { '@type': 'City', 'name': 'Tangerang' },
+        { '@type': 'City', 'name': 'Serang' },
+        { '@type': 'State', 'name': 'Banten' }
+      ],
+      'mainEntityOfPage': {
+        '@id': Astro.url.href
+      }
+    })}
+  />
+
+  {/* FAQPage Schema (Dynamic from siloData) */}
+  {siloData.faqs && siloData.faqs.length > 0 && (
+    <script
+      type='application/ld+json'
+      is:inline
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': siloData.faqs.map(faq => ({
+          '@type': 'Question',
+          'name': faq.q,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': faq.a
+          }
+        }))
+      })}
+    />
+  )}
 
   <ServicesHero
     lang={lang}
@@ -172,8 +263,14 @@ const siloData = isWebsiteCategory ? {
     mainImage={howItWorksData?.mainImage}
     steps={howItWorksData?.steps}
   />
-  <SiloContent lang={lang} data={siloData} />
-  <BlogOverview lang={lang} categorySlug={slug} />
+  <SiloContent
+    lang={lang}
+    data={siloData}
+  />
+  <BlogOverview
+    lang={lang}
+    categorySlug={slug}
+  />
   <FAQ lang={lang} />
 
   <Contact lang={lang} />

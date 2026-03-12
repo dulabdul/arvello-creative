@@ -35,6 +35,21 @@ const processedFaqs: FaqItem[] = rawFaqs.map((faq: any, index: number) => ({
 }));
 ---
 
+{processedFaqs.length > 0 && (
+  <script type="application/ld+json" is:inline set:html={JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": processedFaqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  })} />
+)}
+
 <section
   id='faq'
   class='py-20 md:py-32 bg-slate-50 relative overflow-hidden'>

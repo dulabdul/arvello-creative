@@ -56,45 +56,45 @@ const pageDesc = `${categoryName} packages from Arvello Creative — professiona
 const isWebsiteCategory = slug.includes('website');
 
 const siloData = isWebsiteCategory ? {
-  title: `Professional Web Design Services in Tangerang`,
-  intro: `Resolusiweb provides professional website services in Tangerang designed to help businesses, SMEs, and companies have modern, fast, and effective websites that support digital business growth. As a professional web development service, we start every project by understanding business needs, website goals, and the target market so that the end result is not only visually appealing but also optimal in functionality and user experience.\n\nThrough our professional website services in Tangerang, you get planned and transparent web development solutions. We ensure responsive design across all devices, SEO-friendly page structures, and a professional look that builds trust with potential customers.`,
+  title: `Professional Web Design Services in Tangerang and Serang`,
+  intro: `Resolusiweb provides professional website services in Tangerang and Serang designed to help businesses, SMEs, and companies have modern, fast, and effective websites that support digital business growth. As a professional web development service, we start every project by understanding business needs, website goals, and the target market in the Banten region so that the end result is not only visually appealing but also optimal in functionality and user experience.\n\nThrough our professional website services in Tangerang and Serang, you get planned and transparent web development solutions. We ensure responsive design across all devices, SEO-friendly page structures, and a professional look that builds trust with potential customers. This service is ideal for businesses looking to establish a strong digital identity and maximize online marketing potential in the Serang and Tangerang areas.`,
   secondaryTitle: `Our Other Services`,
-  secondaryContent: `Resolusiweb also provides SEO services, SEO article writing, UI/UX optimization, and digital marketing tool integration. Every website is built with a strong SEO structure, professional design, and optimal performance so it's ready to be used as a medium for branding and online marketing.`,
-  benefitsTitle: `Why Do You Need a Professional Website?`,
+  secondaryContent: `Resolusiweb also provides SEO services, SEO article writing, UI/UX optimization, and digital marketing tool integration designed for businesses in Tangerang, Serang, and surrounding areas. Every website is built with a strong SEO structure, professional design, and optimal performance so it's ready to be used as a medium for branding and online marketing.`,
+  benefitsTitle: `Why Do You Need a Professional Website in Banten?`,
   benefits: [
     "Professional look that builds customer trust",
-    "Easy for customers to find business information",
-    "Enhanced brand credibility and image",
-    "Ready for digital marketing strategies",
-    "24/7 active online promotion media"
+    "Easy for local customers in Tangerang & Serang to find you",
+    "Enhanced brand credibility in the Banten regional market",
+    "Ready for advanced digital marketing strategies",
+    "24/7 active online promotion platform"
   ],
-  faqTitle: `Professional Web Design FAQ in Tangerang`,
+  faqTitle: `Web Design FAQ in Tangerang & Serang`,
   faqs: [
-    { q: "What is Tangerang professional web design service?", a: "It's a web development service specifically designed to help businesses have modern, responsive websites according to current digital standards." },
+    { q: "What is Tangerang & Serang professional web design service?", a: "It's a web development service specifically designed to help businesses in Banten have modern, responsive websites according to current digital standards." },
     { q: "Why does a business need a professional website?", a: "A professional website helps build business credibility and makes it easier for customers to get information quickly." },
     { q: "How long is the web development process?", a: "The process generally takes 2 to 6 weeks, depending on design complexity and feature requirements." },
-    { q: "Is the website SEO-friendly?", a: "Yes, every website built by Resolusiweb uses an SEO-friendly structure, from page layout to speed and basic SEO settings." }
+    { q: "Is the website SEO-friendly?", a: "Yes, every website built by Resolusiweb is optimized for search engines so your customers in Tangerang and Serang can find you easily." }
   ],
-  footerTitle: `Tangerang Web Development Solutions`,
-  footerContent: `Don't have a website yet or want a high-quality one at an affordable price? Trust your company's web development to us. We combine premium aesthetics with strong technical functionality to ensure your success.`
+  footerTitle: `Tangerang & Serang Web Development Solutions`,
+  footerContent: `Don't have a website yet or want a high-quality one at an affordable price? Trust your company's web development in Tangerang and Serang to us. We combine premium aesthetics with strong technical functionality to ensure your success.`
 } : {
   // Generic Fallback
-  title: `Professional ${categoryName} Services`,
-  intro: `Resolusiweb provides ${categoryName} services designed specifically to increase your business performance in the digital realm. With a strategic approach and professional execution, we ensure every project delivers real impact.`,
+  title: `Professional ${categoryName} Services in Tangerang & Serang`,
+  intro: `Resolusiweb provides ${categoryName} services designed specifically to increase your business performance in Tangerang, Serang, and across the Banten region. With a strategic approach and professional execution, we ensure every project delivers real impact for local businesses and B2B companies looking to scale up.`,
   benefitsTitle: `Why Choose Us for ${categoryName}?`,
   benefits: [
-    `Certified expert team with years of experience`,
-    `Data-driven approach for maximum results`,
-    `Transparent process and regular communication`,
-    `Customized solutions for your specific business needs`
+    `Certified expert team focused on the Banten digital market`,
+    `Data-driven approach for maximum conversion results`,
+    `Transparent process and regular communication in Tangerang & Serang`,
+    `Customized solutions for your specific regional growth needs`
   ],
-  faqTitle: `Questions about ${categoryName}`,
+  faqTitle: `Questions about ${categoryName} in Tangerang & Serang`,
   faqs: [
-    { q: `What are the advantages of ${categoryName} at Arvello?`, a: `We combine premium design aesthetics with strong technical functionality to ensure your ${categoryName} stands out.` },
-    { q: `What is the delivery process?`, a: `The process starts with consultation, strategy, design, through implementation and periodic reviews.` }
+    { q: `What are the advantages of ${categoryName} at Arvello compared to other Banten agencies?`, a: `We combine premium design aesthetics with strong technical functionality that specifically targets the Tangerang and Serang markets.` },
+    { q: `Is this service suitable for SMEs in Serang?`, a: `Absolutely. Our services are flexible, catering to both local SMEs in Serang and larger corporations in Tangerang seeking complex digital ecosystems.` }
   ],
   footerTitle: `Grow Your Business with ${categoryName}`,
-  footerContent: `Ready to take the next step? Contact us now to discuss how our ${categoryName} services can help you achieve this year's business targets.`
+  footerContent: `Ready to take the next step in Tangerang or Serang? Contact us now to discuss how our ${categoryName} services can help you achieve your business targets in Banten.`
 };
 ---
 
@@ -109,6 +109,7 @@ const siloData = isWebsiteCategory ? {
     set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
+      '@id': `${Astro.url.href}#breadcrumb`,
       itemListElement: [
         {
           '@type': 'ListItem',
@@ -126,11 +127,54 @@ const siloData = isWebsiteCategory ? {
           '@type': 'ListItem',
           position: 3,
           name: categoryName,
-          item: `https://arvellocreative.com/en/services/${slug}`,
+          item: Astro.url.href,
         },
       ],
     })}
   />
+
+  {/* Service Schema */}
+  <script
+    type='application/ld+json'
+    is:inline
+    set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Service',
+      'name': `Professional ${categoryName} Services in Tangerang & Serang`,
+      'description': pageDesc,
+      'provider': {
+        '@id': 'https://arvellocreative.com/#organization'
+      },
+      'areaServed': [
+        { '@type': 'City', 'name': 'Tangerang' },
+        { '@type': 'City', 'name': 'Serang' },
+        { '@type': 'State', 'name': 'Banten' }
+      ],
+      'mainEntityOfPage': {
+        '@id': Astro.url.href
+      }
+    })}
+  />
+
+  {/* FAQPage Schema (Dynamic from siloData) */}
+  {siloData.faqs && siloData.faqs.length > 0 && (
+    <script
+      type='application/ld+json'
+      is:inline
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        'mainEntity': siloData.faqs.map(faq => ({
+          '@type': 'Question',
+          'name': faq.q,
+          'acceptedAnswer': {
+            '@type': 'Answer',
+            'text': faq.a
+          }
+        }))
+      })}
+    />
+  )}
 
   <ServicesHero
     lang={lang}

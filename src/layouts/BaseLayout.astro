@@ -118,7 +118,55 @@ const gtmId = siteSettings.gtmId;
       "@type": "WebSite",
       "name": baseSeoTitle,
       "url": siteUrl,
-      "description": finalDesc
+      "description": finalDesc,
+      "publisher": {
+        "@id": `${siteUrl}/#organization`
+      }
+    })} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@id": `${siteUrl}/#organization`,
+      "@type": "Organization",
+      "name": finalBrandName,
+      "url": siteUrl,
+      "logo": finalOgImage || "",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": siteSettings.contactNumber || "+6281234567890",
+        "contactType": "sales",
+        "areaServed": "ID",
+        "availableLanguage": ["id", "en"]
+      },
+      "sameAs": siteSettings.socialLinks?.map((s: any) => s.url) || []
+    })} />
+
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": finalBrandName,
+      "image": finalOgImage || "",
+      "@id": siteUrl,
+      "url": siteUrl,
+      "telephone": siteSettings.contactNumber || "+6281234567890",
+      "priceRange": "$$",
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": "Tangerang",
+        "addressRegion": "Banten",
+        "addressCountry": "ID"
+      },
+      "areaServed": [
+        { "@type": "City", "name": "Tangerang" },
+        { "@type": "City", "name": "Serang" },
+        { "@type": "State", "name": "Banten" },
+        { "@type": "Country", "name": "Indonesia" }
+      ],
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": -6.1783,
+        "longitude": 106.6319
+      }
     })} />
 
     {/* --- GOOGLE TAG MANAGER (Head) --- */}
@@ -158,7 +206,7 @@ const gtmId = siteSettings.gtmId;
       <slot />
     </main>
     
-    <Footer lang={lang} />
+    <Footer lang={lang} serviceCategories={serviceCategories} />
     <FloatingWhatsApp lang={lang} />
   </body>
 </html>
