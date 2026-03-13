@@ -4,7 +4,7 @@ import type { APIRoute } from 'astro';
 
 export const GET: APIRoute = async ({ request }) => {
   // Mendapatkan root URL secara dinamis (misal: https://arvellocreative.com)
-  const siteUrl = import.meta.env.SITE || 'https://www.arvellocreative.com';
+  const siteUrl = import.meta.env.SITE || 'https://arvellocreative.com';
   const posts = await sanityClient.fetch(`
     *[_type == "post"] {
       _updatedAt,
@@ -102,6 +102,7 @@ export const GET: APIRoute = async ({ request }) => {
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
     <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
       ${staticUrls}
+      ${categoryUrls}
       ${dynamicUrls}
     </urlset>
   `;
