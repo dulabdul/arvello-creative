@@ -28,13 +28,13 @@ const query = `
       bio,
       social
     },
-    category->,
+    categories[]->,
     "relatedPosts": *[
       _type == "post" && 
-      category._ref == ^.category._ref && 
+      (count(categories[@._ref in ^.categories[]._ref]) > 0) &&
       _id != ^._id
     ] | order(publishedAt desc)[0...3] {
-      title, slug, mainImage, publishedAt, excerpt, category->
+      title, slug, mainImage, publishedAt, excerpt, categories[]->
     }
   }
 `;
@@ -46,7 +46,7 @@ if (!post) return Astro.redirect('/404');
 // --- PENGOLAHAN DATA ---
 const contentBlocks = post.body?.[lang] || [];
 const title = post.title?.[lang] || 'Untitled';
-const categoryName = post.category?.title?.[lang] || 'General';
+const postCategories = post.categories?.map((cat: any) => cat.title?.[lang]) || ['General'];
 const authorName = post.author?.name || 'Editorial Team';
 const authorBioText = post.author?.bio?.[lang] || '';
 const authorImage = post.author?.image
@@ -67,12 +67,17 @@ const publishDate = new Date(post.publishedAt).toLocaleDateString('en-US', {
 // Ekstrak Meta Otomatis
 const readingTime = getReadingTime(contentBlocks);
 const toc = generateToC(contentBlocks);
+
+const alternativeLangPath = post.slug?.id?.current 
+  ? `/blog/${post.slug.id.current}` 
+  : '/blog';
 ---
 
 <BaseLayout
   lang={lang}
   title={`${title} | Blog`}
-  description={post.excerpt?.[lang]}>
+  description={post.excerpt?.[lang]}
+  alternativeLangPath={alternativeLangPath}>
   <article class='pt-24 md:pt-32 pb-20 bg-slate-50 min-h-screen'>
     <div class='container mx-auto px-4 max-w-7xl'>
       {/* --- 1. HERO SECTION (Sesuai Referensi, Text di dalam Image) --- */}
@@ -134,8 +139,14 @@ const toc = generateToC(contentBlocks);
               </div>
 
               <div>
-                <p class='text-sm font-medium text-slate-400 mb-1'>Category</p>
-                <p class='font-bold text-slate-900'>{categoryName}</p>
+                <p class='text-sm font-medium text-slate-400 mb-1.5'>Category</p>
+                <div class="flex flex-wrap gap-2">
+                  {postCategories.map((name: string) => (
+                    <span class="inline-block px-2.5 py-1 bg-slate-100 text-slate-900 rounded-lg text-[10px] font-bold uppercase tracking-wider border border-slate-200">
+                      {name}
+                    </span>
+                  ))}
+                </div>
               </div>
 
               <div>
@@ -555,7 +566,6 @@ const toc = generateToC(contentBlocks);
           </h2>
 
           <div class='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8'>
-            {post.relatedPosts.map((related: any) => {
               const relTitle = related.title?.[lang] || 'Untitled';
               const relImage = related.mainImage
                 ? urlFor(related.mainImage).width(600).height(400).url()
@@ -574,8 +584,12 @@ const toc = generateToC(contentBlocks);
                       alt={relTitle}
                       class='w-full h-full object-cover group-hover:scale-105 transition-transform duration-500'
                     />
-                    <div class='absolute top-3 left-3 bg-white/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-bold text-blue-600 uppercase'>
-                      {related.category?.title?.[lang]}
+                    <div class='absolute top-3 left-3 flex flex-wrap gap-1'>
+                      {related.categories?.map((cat: any) => (
+                        <div class='bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold text-blue-600 uppercase border border-white'>
+                          {cat.title?.[lang]}
+                        </div>
+                      ))}
                     </div>
                   </div>
                   <div class='p-6 flex-grow flex flex-col justify-center'>

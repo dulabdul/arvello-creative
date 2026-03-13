@@ -10,6 +10,7 @@ interface NavbarProps {
   currentLang: 'id' | 'en';
   currentPath?: string;
   serviceCategories?: { name: string; slug: string }[];
+  alternativeLangPath?: string;
 }
 
 export default function Navbar({
@@ -17,6 +18,7 @@ export default function Navbar({
   currentLang,
   currentPath = '/',
   serviceCategories = [],
+  alternativeLangPath,
 }: NavbarProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isServicesOpen, setIsServicesOpen] = useState(false);
@@ -69,7 +71,10 @@ export default function Navbar({
 
   // Logika Switch Bahasa Dinamis
   let toggleLangPath = '/';
-  if (currentLang === 'id') {
+  
+  if (alternativeLangPath) {
+    toggleLangPath = alternativeLangPath;
+  } else if (currentLang === 'id') {
     if (layananSubMatch) {
       toggleLangPath = `/en/services/${layananSubMatch[1]}`;
     } else {
@@ -154,10 +159,9 @@ export default function Navbar({
 
         {/* --- KANAN: LANGUAGE SWITCHER (DESKTOP) --- */}
         <div className='hidden md:flex items-center gap-4 min-w-[80px] justify-end'>
-          {!isBlogDetailRoute && (
-            <a
-              href={toggleLangPath}
-              aria-label={`Switch language to ${toggleLangFullText}`}>
+          <a
+            href={toggleLangPath}
+            aria-label={`Switch language to ${toggleLangFullText}`}>
               <Button
                 variant='outline'
                 className='rounded-xl flex items-center gap-2 border-slate-300 hover:bg-slate-100'>
@@ -167,7 +171,6 @@ export default function Navbar({
                 </span>
               </Button>
             </a>
-          )}
         </div>
 
         {/* --- MOBILE NAV --- */}
@@ -232,16 +235,14 @@ export default function Navbar({
               </nav>
 
               {/* Language Switcher Mobile (Revamped UI) */}
-              {!isBlogDetailRoute && (
-                <div className='mt-auto pt-6 border-t border-slate-100'>
-                  <a
-                    href={toggleLangPath}
-                    className='flex items-center justify-center gap-2 w-full py-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-2xl transition-all font-bold text-base'>
-                    <Globe className='w-5 h-5 text-slate-600' />
-                    {toggleLangFullText}
-                  </a>
-                </div>
-              )}
+              <div className='mt-auto pt-6 border-t border-slate-100'>
+                <a
+                  href={toggleLangPath}
+                  className='flex items-center justify-center gap-2 w-full py-4 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 rounded-2xl transition-all font-bold text-base'>
+                  <Globe className='w-5 h-5 text-slate-600' />
+                  {toggleLangFullText}
+                </a>
+              </div>
             </SheetContent>
           </Sheet>
         </div>
