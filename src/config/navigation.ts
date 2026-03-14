@@ -37,3 +37,30 @@ export const getNavLinks = (lang: 'id' | 'en') => {
     href: item.hrefLocale?.[lang] ?? item.href,
   }));
 };
+
+/**
+ * Resolves a navigation URL based on the current page path and language.
+ * Ensures anchor links (#) point to the home page if the user is on a sub-page.
+ */
+export const resolveAnchorLink = (href: string, currentPath: string, lang: 'id' | 'en') => {
+  // Clean path (remove double slashes and trailing slash for comparison)
+  const safePath = currentPath.replace(/\/+/g, '/').replace(/\/$/, '') || '/';
+  const isHomePage = safePath === '/' || safePath === '/en';
+
+  if (href.startsWith('#')) {
+    if (isHomePage) {
+      return href; // Anchors work fine on home page
+    }
+    // Cross-page anchor: redirect to homepage first
+    return lang === 'id' ? `/${href}` : `/en/${href}`;
+  }
+
+  // Handle absolute internal paths for multi-language
+  if (href.startsWith('/') && !href.startsWith('http')) {
+    if (lang === 'en' && !href.startsWith('/en')) {
+      return `/en${href}`;
+    }
+  }
+
+  return href;
+};

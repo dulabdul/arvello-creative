@@ -208,7 +208,87 @@ const gtmId = siteSettings.gtmId;
       <slot />
     </main>
     
-    <Footer lang={lang} serviceCategories={serviceCategories} />
+    <Footer lang={lang} currentPath={currentPath} serviceCategories={serviceCategories} />
     <FloatingWhatsApp lang={lang} />
+
+    {/* --- UTM TRACKING SCRIPT --- */}
+    <script is:inline>
+      (function() {
+        const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign'];
+        
+        // 1. Capture UTM from URL and save to sessionStorage
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          UTM_PARAMS.forEach(param => {
+            const value = urlParams.get(param);
+            if (value) {
+              sessionStorage.setItem('wa_' + param, value);
+            }
+          });
+        } catch (e) {}
+
+        // 2. Helper to update WhatsApp links
+        function updateWaLink(link) {
+          try {
+            const href = link.getAttribute('href');
+            if (!href || !href.includes('wa.me')) return;
+            
+            // Avoid double processing
+            if (link.getAttribute('data-wa-utm-applied') === 'true') return;
+
+            const utmSource = sessionStorage.getItem('wa_utm_source');
+            const utmMedium = sessionStorage.getItem('wa_utm_medium');
+            const utmCampaign = sessionStorage.getItem('wa_utm_campaign');
+
+            // Skip if no UTM data found in current session
+            if (!utmSource && !utmMedium && !utmCampaign) return;
+
+            const url = new URL(href, window.location.origin);
+            const currentText = url.searchParams.get('text') || '';
+            
+            let utmBlock = '\n\n---';
+            if (utmSource) utmBlock += `\nSource: ${utmSource}`;
+            if (utmMedium) utmBlock += `\nMedium: ${utmMedium}`;
+            if (utmCampaign) utmBlock += `\nCampaign: ${utmCampaign}`;
+
+            // Check to avoid duplicate appendage
+            if (!currentText.includes('---')) {
+              url.searchParams.set('text', currentText + utmBlock);
+              link.href = url.toString();
+              link.setAttribute('data-wa-utm-applied', 'true');
+            }
+          } catch (e) {}
+        }
+
+        // 3. Efficient Batch Processing
+        function processAllLinks() {
+          const links = document.querySelectorAll('a[href*="wa.me"]');
+          links.forEach(updateWaLink);
+        }
+
+        // 4. MutationObserver for Dynamic Content (Pricing Carousel)
+        const observer = new MutationObserver((mutations) => {
+          let shouldProcess = false;
+          for (const mutation of mutations) {
+            if (mutation.addedNodes.length > 0) {
+              shouldProcess = true;
+              break;
+            }
+          }
+          if (shouldProcess) processAllLinks();
+        });
+
+        // Initialize
+        if (document.body) {
+          observer.observe(document.body, { childList: true, subtree: true });
+          processAllLinks();
+        } else {
+          document.addEventListener('DOMContentLoaded', () => {
+            processAllLinks();
+            observer.observe(document.body, { childList: true, subtree: true });
+          });
+        }
+      })();
+    </script>
   </body>
 </html>

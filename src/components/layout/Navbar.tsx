@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Menu, Zap, Globe, ChevronRight } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '../ui/sheet';
-import { getNavLinks } from '@/config/navigation';
+import { getNavLinks, resolveAnchorLink } from '@/config/navigation';
 
 interface NavbarProps {
   brandName?: string;
@@ -27,35 +27,8 @@ export default function Navbar({
   // Bersihkan slash ganda jika ada
   const safePath = currentPath.replace(/\/+/g, '/');
 
-  const isBlogDetailRoute =
-    (safePath.startsWith('/blog/') && safePath.length > '/blog/'.length) ||
-    (safePath.startsWith('/en/blog/') && safePath.length > '/en/blog/'.length);
-
-  // Periksa apakah user ada di homepage (root atau /en)
-  const isHomePage =
-    safePath === '/' || safePath === '/en' || safePath === '/en/';
-
   // Helper untuk membuat href dinamis berdasarkan posisi halaman
-  const resolveHref = (href: string) => {
-    // Jika link adalah hash link (misal: #contact)
-    if (href.startsWith('#')) {
-      if (isHomePage) {
-        // Jika sedang di homepage, biarkan saja agar smooth scroll browser berfungsi
-        return href;
-      } else {
-        // Jika di sub-page (misal: /blog), arahkan ke homepage lalu ke hash tersebut
-        return currentLang === 'id' ? `/${href}` : `/en/${href}`;
-      }
-    } else if (href.startsWith('/')) {
-      // Jika link adalah internal path murni (misal: /blog)
-      if (currentLang === 'en' && !href.startsWith('/en')) {
-        return `/en${href}`;
-      }
-      return href;
-    }
-    // Jika link eksternal (https://...)
-    return href;
-  };
+  const resolveHref = (href: string) => resolveAnchorLink(href, currentPath, currentLang);
 
   // ─── Localized path alias map ─────────────────────────────────────────────
   // Maps localized paths to their language counterparts.
