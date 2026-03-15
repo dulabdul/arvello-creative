@@ -46,7 +46,7 @@ const processedProjects: ProjectSlideData[] = rawProjects
   .map((project: any, index: number) => ({
     id: project._key || String(index),
     imageUrl: project.image
-      ? urlFor(project.image).width(1200).height(750).fit('crop').url()
+      ? urlFor(project.image).width(800).height(500).fit('crop').auto('format').url()
       : '',
     imageAlt: project.image?.alt || project.title || 'Project Screenshot',
     projectUrl: project.projectUrl || null,

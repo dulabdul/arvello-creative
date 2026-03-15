@@ -50,12 +50,12 @@ const processedTemplates: TemplateSlideData[] = rawTemplates
     id: template._key || String(index),
     // Generate URL gambar dengan lebar yang cukup untuk retina display
     imageUrl: template.image
-      ? urlFor(template.image).width(1200).height(750).fit('crop').url()
+      ? urlFor(template.image).width(800).height(500).fit('crop').auto('format').url()
       : '',
     imageAlt: template.image?.alt || template.title || 'template Screenshot',
     templateUrl: template.templateUrl || null,
   }))
-  .filter((p) => p.imageUrl)
+  .filter((p: any) => p.imageUrl)
   .slice(0, 6); // Hapus item yang tidak punya gambar
 ---
 

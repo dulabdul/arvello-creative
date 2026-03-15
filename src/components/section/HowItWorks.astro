@@ -43,7 +43,7 @@ const displayDesc =
 
 // Proses Gambar Sanity
 const imageUrl = mainImage
-  ? urlFor(mainImage).width(800).height(1000).url()
+  ? urlFor(mainImage).width(800).height(450).auto('format').url()
   : null;
 const imageAlt = mainImage?.alt || 'Process visualization image';
 ---
@@ -81,7 +81,7 @@ const imageAlt = mainImage?.alt || 'Process visualization image';
                 src={imageUrl}
                 alt={imageAlt}
                 width={800}
-                height={1000}
+                height={450}
                 class='w-full aspect-[16/9] object-cover bg-slate-200'
               />
             </div>

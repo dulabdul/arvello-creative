@@ -94,7 +94,7 @@ const displayDesc = description?.[lang] || '';
           // TIPE 2: BRAND CARD (Sekarang menjadi Full Image Cover)
           if (item._type === 'brandBlock') {
             const imageUrl = item.image
-              ? urlFor(item.image).width(600).height(600).url()
+              ? urlFor(item.image).width(500).height(500).auto('format').url()
               : null;
 
             return (
@@ -119,7 +119,7 @@ const displayDesc = description?.[lang] || '';
           // TIPE 3: IMAGE CARD (Foto Full)
           if (item._type === 'imageBlock') {
             const photoUrl = item.photo
-              ? urlFor(item.photo).width(600).height(600).url()
+              ? urlFor(item.photo).width(500).height(500).auto('format').url()
               : null;
 
             return (
