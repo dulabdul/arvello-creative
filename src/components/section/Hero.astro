@@ -1,6 +1,6 @@
 ---
 // src/components/section/Hero.astro
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 // Gunakan buttonVariants untuk menghindari error <a><Button> yang kita bahas sebelumnya
 import { buttonVariants } from '@/components/ui/button';
 
@@ -17,7 +17,12 @@ const {
   ctaText = 'Get in Touch',
   ctaLink = '#contact',
 } = Astro.props;
+
+const optimizedBackground = await getImage({ src: heroBackground, format: 'webp', quality: 80 });
 ---
+
+{/* Preload critical LCP image */}
+<link rel="preload" as="image" href={optimizedBackground.src} fetchpriority="high" />
 
 <section
   id='home'

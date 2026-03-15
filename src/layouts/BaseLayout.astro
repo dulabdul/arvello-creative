@@ -77,8 +77,16 @@ const gtmId = siteSettings.gtmId;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
     {/* --- PRECONNECT UNTUK PERFORMA (Best Practice PageSpeed) --- */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.sanity.io" crossorigin />
     {gtmId && <link rel="preconnect" href="https://www.googletagmanager.com" />}
+
+    {/* --- GOOGLE FONTS (Non-blocking) --- */}
+    <link href="https://fonts.googleapis.com/css2?family=Suranna&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Suranna&display=swap" rel="stylesheet" />
+    </noscript>
 
     <title>{finalTitle}</title>
     <meta name="title" content={finalTitle} />
@@ -214,103 +222,97 @@ const gtmId = siteSettings.gtmId;
     {/* --- UTM TRACKING SCRIPT --- */}
     <script is:inline>
       (function() {
-        const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign'];
-        const SEARCH_ENGINES = ['google', 'bing', 'yahoo', 'duckduckgo', 'baidu', 'yandex'];
-        
-        // 1. Capture UTM / Organic from URL and save to sessionStorage
-        try {
-          const urlParams = new URLSearchParams(window.location.search);
-          let hasUtm = false;
-          UTM_PARAMS.forEach(param => {
-            const value = urlParams.get(param);
-            if (value) {
-              sessionStorage.setItem('wa_' + param, value);
-              hasUtm = true;
-            }
-          });
-
-          // Detect Organic if no explicitly provided UTMs
-          if (!hasUtm && document.referrer) {
-            const referrer = document.referrer.toLowerCase();
-            const isOrganic = SEARCH_ENGINES.some(engine => referrer.includes(engine));
-            if (isOrganic) {
-              // Default to google if generic search engine detection is needed
-              let engineSource = 'google';
-              for (const engine of SEARCH_ENGINES) {
-                if (referrer.includes(engine)) {
-                  engineSource = engine;
-                  break;
-                }
-              }
-              sessionStorage.setItem('wa_utm_source', engineSource);
-              sessionStorage.setItem('wa_utm_medium', 'organic');
-            }
-          }
-        } catch (e) {}
-
-        // 2. Helper to update WhatsApp links
-        function updateWaLink(link) {
+        // Optimization: Defer tracking script to improve PageSpeed
+        function initTracking() {
+          const UTM_PARAMS = ['utm_source', 'utm_medium', 'utm_campaign'];
+          const SEARCH_ENGINES = ['google', 'bing', 'yahoo', 'duckduckgo', 'baidu', 'yandex'];
+          
+          // 1. Capture UTM / Organic from URL and save to sessionStorage
           try {
-            const href = link.getAttribute('href');
-            if (!href || !href.includes('wa.me')) return;
-            
-            // Re-apply if page changes (to ensure current URL is fresh)
-            if (link.getAttribute('data-wa-utm-applied') === window.location.href) return;
+            const urlParams = new URLSearchParams(window.location.search);
+            let hasUtm = false;
+            UTM_PARAMS.forEach(param => {
+              const value = urlParams.get(param);
+              if (value) {
+                sessionStorage.setItem('wa_' + param, value);
+                hasUtm = true;
+              }
+            });
 
-            const utmSource = sessionStorage.getItem('wa_utm_source');
-            const utmMedium = sessionStorage.getItem('wa_utm_medium');
-            const utmCampaign = sessionStorage.getItem('wa_utm_campaign');
-
-            const url = new URL(href, window.location.origin);
-            const currentText = (url.searchParams.get('text') || '').split('\n\n--')[0];
-            
-            // Build Contextual Message
-            let newText = currentText;
-            
-            // Add Page context
-            newText += `\n\n--\nPage: ${window.location.href}`;
-
-            // Add UTM attribution if exists
-            if (utmSource || utmMedium || utmCampaign) {
-              newText += '\n\n--';
-              if (utmSource) newText += `\nSource: ${utmSource}`;
-              if (utmMedium) newText += `\nMedium: ${utmMedium}`;
-              if (utmCampaign) newText += `\nCampaign: ${utmCampaign}`;
+            if (!hasUtm && document.referrer) {
+              const referrer = document.referrer.toLowerCase();
+              const isOrganic = SEARCH_ENGINES.some(engine => referrer.includes(engine));
+              if (isOrganic) {
+                let engineSource = 'google';
+                for (const engine of SEARCH_ENGINES) {
+                  if (referrer.includes(engine)) {
+                    engineSource = engine;
+                    break;
+                  }
+                }
+                sessionStorage.setItem('wa_utm_source', engineSource);
+                sessionStorage.setItem('wa_utm_medium', 'organic');
+              }
             }
-
-            url.searchParams.set('text', newText);
-            link.href = url.toString();
-            link.setAttribute('data-wa-utm-applied', window.location.href);
           } catch (e) {}
-        }
 
-        // 3. Efficient Batch Processing
-        function processAllLinks() {
-          const links = document.querySelectorAll('a[href*="wa.me"]');
-          links.forEach(updateWaLink);
-        }
+          // 2. Helper to update WhatsApp links
+          function updateWaLink(link) {
+            try {
+              const href = link.getAttribute('href');
+              if (!href || !href.includes('wa.me')) return;
+              if (link.getAttribute('data-wa-utm-applied') === window.location.href) return;
 
-        // 4. MutationObserver for Dynamic Content (Pricing Carousel)
-        const observer = new MutationObserver((mutations) => {
-          let shouldProcess = false;
-          for (const mutation of mutations) {
-            if (mutation.addedNodes.length > 0) {
-              shouldProcess = true;
-              break;
-            }
+              const utmSource = sessionStorage.getItem('wa_utm_source');
+              const utmMedium = sessionStorage.getItem('wa_utm_medium');
+              const utmCampaign = sessionStorage.getItem('wa_utm_campaign');
+
+              const url = new URL(href, window.location.origin);
+              const currentText = (url.searchParams.get('text') || '').split('\n\n--')[0];
+              
+              let newText = currentText;
+              newText += `\n\n--\nPage: ${window.location.href}`;
+
+              if (utmSource || utmMedium || utmCampaign) {
+                newText += '\n\n--';
+                if (utmSource) newText += `\nSource: ${utmSource}`;
+                if (utmMedium) newText += `\nMedium: ${utmMedium}`;
+                if (utmCampaign) newText += `\nCampaign: ${utmCampaign}`;
+              }
+
+              url.searchParams.set('text', newText);
+              link.href = url.toString();
+              link.setAttribute('data-wa-utm-applied', window.location.href);
+            } catch (e) {}
           }
-          if (shouldProcess) processAllLinks();
-        });
 
-        // Initialize
-        if (document.body) {
-          observer.observe(document.body, { childList: true, subtree: true });
-          processAllLinks();
-        } else {
-          document.addEventListener('DOMContentLoaded', () => {
-             processAllLinks();
-             observer.observe(document.body, { childList: true, subtree: true });
+          function processAllLinks() {
+            const links = document.querySelectorAll('a[href*="wa.me"]');
+            links.forEach(updateWaLink);
+          }
+
+          const observer = new MutationObserver((mutations) => {
+            let shouldProcess = false;
+            for (const mutation of mutations) {
+              if (mutation.addedNodes.length > 0) {
+                shouldProcess = true;
+                break;
+              }
+            }
+            if (shouldProcess) processAllLinks();
           });
+
+          if (document.body) {
+            observer.observe(document.body, { childList: true, subtree: true });
+            processAllLinks();
+          }
+        }
+
+        // Defer execution until idle or small timeout to avoid blocking initial render
+        if ('requestIdleCallback' in window) {
+          window.requestIdleCallback(() => initTracking());
+        } else {
+          setTimeout(() => initTracking(), 200);
         }
       })();
     </script>
