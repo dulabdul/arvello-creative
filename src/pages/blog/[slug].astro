@@ -18,6 +18,10 @@ export async function getStaticPaths() {
 const { slug } = Astro.params;
 const lang = 'id';
 
+// RESOLVE ABSOLUTE URL FOR SEO
+const siteSettings = (await sanityClient.fetch(`*[_type == "siteSettings"][0]`)) || {};
+const siteUrl = siteSettings.siteUrl || Astro.site || Astro.url.origin;
+
 // 2. FETCH DATA ARTIKEL & REKOMENDASI CERDAS DALAM 1 QUERY
 const query = `
   *[_type == "post" && slug.id.current == $slug][0] {
@@ -79,7 +83,7 @@ const blogSchema = {
     "name": "Arvello Creative",
     "logo": {
       "@type": "ImageObject",
-      "url": `${Astro.url.origin}/og-image.png`
+      "url": `${siteUrl}/og-image.png`
     }
   },
   "abstract": takeaways.length > 0 ? takeaways.join(". ") : undefined
