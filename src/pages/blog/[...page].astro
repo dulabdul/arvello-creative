@@ -21,22 +21,22 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   `;
   const posts = await sanityClient.fetch(query);
 
-  // 12 posts per page for maximum performance and UX caching
-  return paginate(posts, { pageSize: 10 });
+  // Featured post is always the first one, the rest are paginated in 9s (3x3 grid)
+  const [firstPost, ...restPosts] = posts;
+
+  return paginate(restPosts, { 
+    pageSize: 9,
+    props: { featuredPost: firstPost }
+  });
 }
 
 // Typings for the paginated prop from Astro
-const { page } = Astro.props;
+const { page, featuredPost: initialFeaturedPost } = Astro.props;
 const lang = 'id';
 
 // Stable Featured Post Logic (Hanya muncul di Page 1)
-let featuredPost = null;
-let gridPosts = page.data;
-
-if (page.currentPage === 1 && page.data.length > 0) {
-  featuredPost = page.data[0]; // Ambil artikel terbaru sebagai featured (lebih stabil ketimbang random)
-  gridPosts = page.data.slice(1);
-}
+const featuredPost = page.currentPage === 1 ? initialFeaturedPost : null;
+const gridPosts = page.data;
 
 // Static Text
 const pageTitle = 'Pusat Wawasan Digital\n& Strategi Pertumbuhan Bisnis';
@@ -80,7 +80,7 @@ const pageDesc =
                           .url()
                       : ''
                   }
-                  srcSet={
+                  srcset={
                     featuredPost.mainImage
                       ? `
                     ${urlFor(featuredPost.mainImage).width(400).format('webp').url()} 400w,
@@ -162,7 +162,7 @@ const pageDesc =
                 ? urlFor(post.mainImage).width(600).format('webp').url()
                 : '';
 
-              const imageSrcSet = post.mainImage
+              const imageSrcset = post.mainImage
                 ? `
                     ${urlFor(post.mainImage).width(400).format('webp').url()} 400w,
                     ${urlFor(post.mainImage).width(800).format('webp').url()} 800w
@@ -182,7 +182,7 @@ const pageDesc =
                     {imageUrl ? (
                       <img
                         src={imageUrl}
-                        srcSet={imageSrcSet}
+                        srcset={imageSrcset}
                         sizes='(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw'
                         alt={title}
                         class='w-full h-full object-cover group-hover:scale-105 transition-transform duration-700'
@@ -259,14 +259,14 @@ const pageDesc =
               <a
                 href={page.url.prev}
                 class='flex items-center gap-2 px-6 py-3 border border-slate-300 rounded-full font-bold text-sm text-slate-700 hover:bg-slate-900 hover:text-white transition-all shadow-sm'>
-                <ChevronLeft class='w-4 h-4' />
+                <ChevronLeft className='w-4 h-4' />
                 Sebelumnya
               </a>
             ) : (
               <button
                 disabled
                 class='flex items-center gap-2 px-6 py-3 border border-slate-200 rounded-full font-bold text-sm text-slate-400 cursor-not-allowed'>
-                <ChevronLeft class='w-4 h-4' />
+                <ChevronLeft className='w-4 h-4' />
                 Sebelumnya
               </button>
             )}
@@ -280,14 +280,14 @@ const pageDesc =
                 href={page.url.next}
                 class='flex items-center gap-2 px-6 py-3 border border-slate-300 rounded-full font-bold text-sm text-slate-700 hover:bg-slate-900 hover:text-white transition-all shadow-sm'>
                 Berikutnya
-                <ChevronRight class='w-4 h-4' />
+                <ChevronRight className='w-4 h-4' />
               </a>
             ) : (
               <button
                 disabled
                 class='flex items-center gap-2 px-6 py-3 border border-slate-200 rounded-full font-bold text-sm text-slate-400 cursor-not-allowed'>
                 Berikutnya
-                <ChevronRight class='w-4 h-4' />
+                <ChevronRight className='w-4 h-4' />
               </button>
             )}
           </div>
