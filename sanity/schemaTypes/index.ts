@@ -9,6 +9,7 @@ import hero from './hero';
 import howItWorks from './howItWorks';
 import localeBlockContent from './localeBlockContent';
 import localeString from './localeString';
+import localeStringArray from './localeStringArray';
 import localeText from './localeText';
 import portfolioSection from './portfolioSection';
 import post from './post';
@@ -21,6 +22,7 @@ export const schemaTypes = [
   siteSettings,
   hero,
   localeString,
+  localeStringArray,
   about,
   localeText,
   howItWorks,

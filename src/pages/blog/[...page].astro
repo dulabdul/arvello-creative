@@ -42,6 +42,9 @@ const gridPosts = page.data;
 const pageTitle = 'Pusat Wawasan Digital\n& Strategi Pertumbuhan Bisnis';
 const pageDesc =
   'Temukan taktik konversi, fundamental SEO, dan pemanfaatan teknologi web modern. Kami membagikan strategi praktis yang sudah teruji untuk membantu Anda mendominasi pasar dan melipatgandakan omset bisnis.';
+
+// --- CACHE OPTIMIZATION (Vercel Hobby Friendly) ---
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
 ---
 
 <BaseLayout

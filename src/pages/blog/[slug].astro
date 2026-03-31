@@ -58,6 +58,36 @@ const heroImage = post.mainImage
   ? urlFor(post.mainImage).width(1600).height(900).url()
   : null;
 
+// --- ANTIGRAVITY: GEO & AI OPTIMIZATION ---
+const takeaways = post.keyTakeaways?.[lang] || [];
+
+const blogSchema = {
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": title,
+  "description": post.excerpt?.[lang] || title,
+  "image": heroImage ? [heroImage] : [],
+  "datePublished": post.publishedAt,
+  "dateModified": post._updatedAt || post.publishedAt,
+  "author": [{
+    "@type": "Person",
+    "name": authorName,
+    "url": authorSocial?.website || ""
+  }],
+  "publisher": {
+    "@type": "Organization",
+    "name": "Arvello Creative",
+    "logo": {
+      "@type": "ImageObject",
+      "url": `${Astro.url.origin}/og-image.png`
+    }
+  },
+  "abstract": takeaways.length > 0 ? takeaways.join(". ") : undefined
+};
+
+// --- CACHE OPTIMIZATION ---
+Astro.response.headers.set('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=30');
+
 const publishDate = new Date(post.publishedAt).toLocaleDateString('en-US', {
   day: 'numeric',
   month: 'long',
@@ -77,8 +107,9 @@ const alternativeLangPath = post.slug?.en?.current
   lang={lang}
   title={`${title} | Blog`}
   description={post.excerpt?.[lang]}
-  alternativeLangPath={alternativeLangPath}>
-  <article class='pt-24 md:pt-32 pb-20 bg-slate-50 min-h-screen'>
+  alternativeLangPath={alternativeLangPath}
+  schema={blogSchema}>
+<article class='pt-24 md:pt-32 pb-20 bg-slate-50 min-h-screen'>
     <div class='container mx-auto px-4 max-w-7xl'>
       {/* --- 1. HERO SECTION (Sesuai Referensi, Text di dalam Image) --- */}
       {
@@ -104,6 +135,28 @@ const alternativeLangPath = post.slug?.en?.current
           </h1>
         )
       }
+
+      {/* --- RINGKASAN CEPAT (Antigravity Architecture for AI/GEO) --- */}
+      {takeaways.length > 0 && (
+        <aside class='mb-12 md:mb-16 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200'>
+          <div class='bg-blue-50/50 rounded-[2rem] border border-blue-100 p-8 md:p-10 shadow-sm'>
+            <div class='flex items-center gap-3 mb-6'>
+              <div class='w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-lg'>
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+              </div>
+              <h2 class='text-xl md:text-2xl font-bold text-slate-900'>Ringkasan Cepat</h2>
+            </div>
+            <ul class='grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4'>
+              {takeaways.map((point: string) => (
+                <li class='flex items-start gap-3 text-slate-700 leading-relaxed group'>
+                  <span class='mt-2.5 w-1.5 h-1.5 rounded-full bg-blue-400 group-hover:bg-blue-600 transition-colors shrink-0' />
+                  <span class='font-medium'>{point}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
+      )}
 
       {/* --- 2. LAYOUT KONTEN KIRI & KANAN --- */}
       <div

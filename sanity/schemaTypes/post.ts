@@ -61,6 +61,13 @@ export default defineType({
       type: 'localeText',
     }),
     defineField({
+      name: 'keyTakeaways',
+      title: 'Key Takeaways (AI Overview Focus)',
+      description: 'Tambahkan 3-5 poin ringkasan utama artikel untuk optimasi AI Crawlers (GEO).',
+      type: 'localeStringArray',
+      validation: (Rule) => Rule.required().error('Key Takeaways wajib diisi untuk optimasi AI.'),
+    }),
+    defineField({
       name: 'body',
       title: 'Body Content',
       type: 'localeBlockContent',
