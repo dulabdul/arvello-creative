@@ -10,7 +10,7 @@ Allow: /
 Disallow: /admin/
 Disallow: /admin/*
 
-Sitemap: ${siteUrl}/sitemap.xml
+Sitemap: ${siteUrl}/sitemap_index.xml
   `.trim();
   return new Response(robotsTxt, {
     headers: {
