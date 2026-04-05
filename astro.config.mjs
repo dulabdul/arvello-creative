@@ -6,7 +6,7 @@ import sanity from '@sanity/astro';
 import vercel from '@astrojs/vercel';
 
 export default defineConfig({
-  site: 'https://arvellocreative.com',
+  site: 'https://www.arvellocreative.com',
   // 1. TIDAK PERLU lagi menuliskan output: 'hybrid' atau 'static'.
   // Astro 5+ sudah otomatis menangani ini.
 

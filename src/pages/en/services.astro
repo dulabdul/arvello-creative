@@ -29,7 +29,6 @@ try {
   lang={lang}
   title='Our Services'
   description='We provide world-class digital solutions — landing pages, company profiles, and e-commerce stores built with modern technology and proven SEO strategies.'>
-
   {/* JSON-LD BreadcrumbList */}
   <script
     type='application/ld+json'
@@ -38,12 +37,21 @@ try {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://arvellocreative.com/en/' },
-        { '@type': 'ListItem', position: 2, name: 'Services', item: 'https://arvellocreative.com/en/services' },
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Home',
+          item: 'https://www.arvellocreative.com/en/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Services',
+          item: 'https://www.arvellocreative.com/en/services',
+        },
       ],
     })}
   />
-
 
   <ServicesHero lang={lang} />
 

@@ -168,13 +168,13 @@ const siloData = isWebsiteCategory
           '@type': 'ListItem',
           position: 1,
           name: 'Beranda',
-          item: 'https://arvellocreative.com/',
+          item: 'https://www.arvellocreative.com/',
         },
         {
           '@type': 'ListItem',
           position: 2,
           name: 'Layanan',
-          item: 'https://arvellocreative.com/layanan',
+          item: 'https://www.arvellocreative.com/layanan',
         },
         {
           '@type': 'ListItem',
@@ -193,41 +193,43 @@ const siloData = isWebsiteCategory
     set:html={JSON.stringify({
       '@context': 'https://schema.org',
       '@type': 'Service',
-      'name': `Jasa ${categoryName} Profesional di Tangerang & Serang`,
-      'description': pageDesc,
-      'provider': {
-        '@id': 'https://arvellocreative.com/#organization'
+      name: `Jasa ${categoryName} Profesional di Tangerang & Serang`,
+      description: pageDesc,
+      provider: {
+        '@id': 'https://www.arvellocreative.com/#organization',
       },
-      'areaServed': [
-        { '@type': 'City', 'name': 'Tangerang' },
-        { '@type': 'City', 'name': 'Serang' },
-        { '@type': 'State', 'name': 'Banten' }
+      areaServed: [
+        { '@type': 'City', name: 'Tangerang' },
+        { '@type': 'City', name: 'Serang' },
+        { '@type': 'State', name: 'Banten' },
       ],
-      'mainEntityOfPage': {
-        '@id': Astro.url.href
-      }
+      mainEntityOfPage: {
+        '@id': Astro.url.href,
+      },
     })}
   />
 
   {/* FAQPage Schema (Dynamic from siloData) */}
-  {siloData.faqs && siloData.faqs.length > 0 && (
-    <script
-      type='application/ld+json'
-      is:inline
-      set:html={JSON.stringify({
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        'mainEntity': siloData.faqs.map(faq => ({
-          '@type': 'Question',
-          'name': faq.q,
-          'acceptedAnswer': {
-            '@type': 'Answer',
-            'text': faq.a
-          }
-        }))
-      })}
-    />
-  )}
+  {
+    siloData.faqs && siloData.faqs.length > 0 && (
+      <script
+        type='application/ld+json'
+        is:inline
+        set:html={JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: siloData.faqs.map((faq) => ({
+            '@type': 'Question',
+            name: faq.q,
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: faq.a,
+            },
+          })),
+        })}
+      />
+    )
+  }
 
   <ServicesHero
     lang={lang}

@@ -28,10 +28,19 @@ try {
   lang={lang}
   title='Layanan Kami'
   description='Kami menyediakan solusi digital terbaik — website landing page, corporate profile, dan e-commerce yang dibangun dengan teknologi modern dan strategi SEO yang terbukti.'>
-
   {/* Hreflang: ID = /layanan, EN = /en/services */}
-  <link slot='head' rel='alternate' hreflang='id' href='https://arvellocreative.com/layanan' />
-  <link slot='head' rel='alternate' hreflang='en' href='https://arvellocreative.com/en/services' />
+  <link
+    slot='head'
+    rel='alternate'
+    hreflang='id'
+    href='https://www.arvellocreative.com/layanan'
+  />
+  <link
+    slot='head'
+    rel='alternate'
+    hreflang='en'
+    href='https://www.arvellocreative.com/en/services'
+  />
 
   {/* JSON-LD BreadcrumbList */}
   <script
@@ -41,8 +50,18 @@ try {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Beranda', item: 'https://arvellocreative.com/' },
-        { '@type': 'ListItem', position: 2, name: 'Layanan', item: 'https://arvellocreative.com/layanan' },
+        {
+          '@type': 'ListItem',
+          position: 1,
+          name: 'Beranda',
+          item: 'https://www.arvellocreative.com/',
+        },
+        {
+          '@type': 'ListItem',
+          position: 2,
+          name: 'Layanan',
+          item: 'https://www.arvellocreative.com/layanan',
+        },
       ],
     })}
   />
