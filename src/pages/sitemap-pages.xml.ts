@@ -35,33 +35,32 @@ export const GET: APIRoute = async ({ request }) => {
       const enUrl = `${siteUrl}${mapping.en}`;
 
       return `
-    <url>
-      <loc>${idUrl}</loc>
-      <xhtml:link rel="alternate" hreflang="id" href="${idUrl}"/>
-      <xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>
-      <changefreq>weekly</changefreq>
-      <priority>${mapping.id === '' ? '1.0' : '0.8'}</priority>
-    </url>
-    <url>
-      <loc>${enUrl}</loc>
-      <xhtml:link rel="alternate" hreflang="id" href="${idUrl}"/>
-      <xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>
-      <changefreq>weekly</changefreq>
-      <priority>0.8</priority>
-    </url>
-      `;
+<url>
+<loc>${idUrl}</loc>
+<xhtml:link rel="alternate" hreflang="id" href="${idUrl}"/>
+<xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>
+<changefreq>weekly</changefreq>
+<priority>${mapping.id === '' ? '1.0' : '0.8'}</priority>
+</url>
+<url>
+<loc>${enUrl}</loc>
+<xhtml:link rel="alternate" hreflang="id" href="${idUrl}"/>
+<xhtml:link rel="alternate" hreflang="en" href="${enUrl}"/>
+<changefreq>weekly</changefreq>
+<priority>0.8</priority>
+</url>`;
     })
     .join('');
 
   const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
-    <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-      ${urls}
-    </urlset>
-  `;
+<?xml-stylesheet type="text/xsl" href="/sitemap.xsl"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${urls}
+</urlset>`.trim();
 
-  return new Response(sitemap.trim(), {
+  return new Response(sitemap, {
     headers: {
-      'Content-Type': 'application/xml',
+      'Content-Type': 'application/xml; charset=utf-8',
       'Cache-Control': 'public, max-age=3600',
     },
   });
